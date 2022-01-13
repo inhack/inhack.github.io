@@ -8,6 +8,18 @@
       <url>https://inhack.github.io/papermod-cover.png</url>
       <link>https://inhack.github.io/papermod-cover.png</link>
     </image>
-    <generator>Hugo -- gohugo.io</generator><atom:link href="https://inhack.github.io/kr/index.xml" rel="self" type="application/rss+xml" />
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 11 Jan 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://inhack.github.io/kr/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[Solution] Damn Vulnerable DeFi</title>
+      <link>https://inhack.github.io/kr/posts/solution-damn-vulnerable-defi/</link>
+      <pubDate>Tue, 11 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://inhack.github.io/kr/posts/solution-damn-vulnerable-defi/</guid>
+      <description>Damn Vulnerable DeFi(The offensive security playground for decentralized finances) Solutions</description>
+    </item>
+    
+    
+    
   </channel>
 </rss>

