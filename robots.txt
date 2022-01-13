@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://inhack.github.io/sitemap.xml
