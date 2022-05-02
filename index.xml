@@ -9,7 +9,20 @@
       <link>https://inhack.github.io/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Thu, 10 Mar 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://inhack.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 02 May 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://inhack.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>비영구적 손실(IL, Impermanent Loss)에 대하여</title>
+      <link>https://inhack.github.io/posts/about-il/</link>
+      <pubDate>Mon, 02 May 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://inhack.github.io/posts/about-il/</guid>
+      <description>1. IL(Impermanent Loss)? 기본적으로 디파이 투자 방식은 (1) 단일 자산 예치 및 스테이킹 과 (2) Pair Liquidity Pool(유동성 풀)에 유동성 공급 두가지로 구분해볼 수 있다.
+(1) 단일 자산 예치 및 스테이킹
+하나의 자산을 예치함으로써 유동성을 제공하고, 그에 따른 보상을 받는다.
+이 때 내가 예치한 자산의 가격변동에 따라 나는 확정적인 이익/손실이 발생한다. (인출/거래 수수료 등은 고려하지 않고 자산의 가치만 생각했을 때)
+내가 $1000에 해당하는 ETH를 예치/스테이킹했을 때를 가정해보자.</description>
+    </item>
+    
     <item>
       <title>[Solution] DeFi Hack</title>
       <link>https://inhack.github.io/posts/solution-defi-hack/</link>

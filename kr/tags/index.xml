@@ -9,22 +9,31 @@
       <link>https://inhack.github.io/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Thu, 10 Mar 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://inhack.github.io/kr/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 02 May 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://inhack.github.io/kr/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>DeFi</title>
+      <link>https://inhack.github.io/kr/tags/defi/</link>
+      <pubDate>Mon, 02 May 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://inhack.github.io/kr/tags/defi/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Impermanent Loss</title>
+      <link>https://inhack.github.io/kr/tags/impermanent-loss/</link>
+      <pubDate>Mon, 02 May 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://inhack.github.io/kr/tags/impermanent-loss/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>CTF</title>
       <link>https://inhack.github.io/kr/tags/ctf/</link>
       <pubDate>Thu, 10 Mar 2022 00:00:00 +0000</pubDate>
       
       <guid>https://inhack.github.io/kr/tags/ctf/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>DeFi</title>
-      <link>https://inhack.github.io/kr/tags/defi/</link>
-      <pubDate>Thu, 10 Mar 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://inhack.github.io/kr/tags/defi/</guid>
       <description></description>
     </item>
     

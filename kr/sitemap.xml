@@ -2,6 +2,110 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://inhack.github.io/kr/categories/</loc>
+    <lastmod>2022-05-02T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://inhack.github.io/categories/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="kr"
+                href="https://inhack.github.io/kr/categories/"
+                />
+  </url><url>
+    <loc>https://inhack.github.io/kr/tags/defi/</loc>
+    <lastmod>2022-05-02T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://inhack.github.io/tags/defi/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="kr"
+                href="https://inhack.github.io/kr/tags/defi/"
+                />
+  </url><url>
+    <loc>https://inhack.github.io/kr/categories/defi/</loc>
+    <lastmod>2022-05-02T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://inhack.github.io/categories/defi/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="kr"
+                href="https://inhack.github.io/kr/categories/defi/"
+                />
+  </url><url>
+    <loc>https://inhack.github.io/kr/tags/impermanent-loss/</loc>
+    <lastmod>2022-05-02T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://inhack.github.io/tags/impermanent-loss/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="kr"
+                href="https://inhack.github.io/kr/tags/impermanent-loss/"
+                />
+  </url><url>
+    <loc>https://inhack.github.io/kr/</loc>
+    <lastmod>2022-05-02T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://inhack.github.io/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="kr"
+                href="https://inhack.github.io/kr/"
+                />
+  </url><url>
+    <loc>https://inhack.github.io/kr/posts/</loc>
+    <lastmod>2022-05-02T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://inhack.github.io/posts/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="kr"
+                href="https://inhack.github.io/kr/posts/"
+                />
+  </url><url>
+    <loc>https://inhack.github.io/kr/tags/</loc>
+    <lastmod>2022-05-02T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://inhack.github.io/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="kr"
+                href="https://inhack.github.io/kr/tags/"
+                />
+  </url><url>
+    <loc>https://inhack.github.io/kr/posts/about-il/</loc>
+    <lastmod>2022-05-02T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://inhack.github.io/posts/about-il/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="kr"
+                href="https://inhack.github.io/kr/posts/about-il/"
+                />
+  </url><url>
     <loc>https://inhack.github.io/kr/posts/solution-defi-hack/</loc>
     <lastmod>2022-03-10T00:00:00+00:00</lastmod>
     <xhtml:link
@@ -28,19 +132,6 @@
                 href="https://inhack.github.io/kr/categories/blockchain-security/"
                 />
   </url><url>
-    <loc>https://inhack.github.io/kr/categories/</loc>
-    <lastmod>2022-03-10T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://inhack.github.io/categories/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="kr"
-                href="https://inhack.github.io/kr/categories/"
-                />
-  </url><url>
     <loc>https://inhack.github.io/kr/tags/ctf/</loc>
     <lastmod>2022-03-10T00:00:00+00:00</lastmod>
     <xhtml:link
@@ -52,45 +143,6 @@
                 rel="alternate"
                 hreflang="kr"
                 href="https://inhack.github.io/kr/tags/ctf/"
-                />
-  </url><url>
-    <loc>https://inhack.github.io/kr/tags/defi/</loc>
-    <lastmod>2022-03-10T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://inhack.github.io/tags/defi/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="kr"
-                href="https://inhack.github.io/kr/tags/defi/"
-                />
-  </url><url>
-    <loc>https://inhack.github.io/kr/</loc>
-    <lastmod>2022-03-10T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://inhack.github.io/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="kr"
-                href="https://inhack.github.io/kr/"
-                />
-  </url><url>
-    <loc>https://inhack.github.io/kr/posts/</loc>
-    <lastmod>2022-03-10T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://inhack.github.io/posts/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="kr"
-                href="https://inhack.github.io/kr/posts/"
                 />
   </url><url>
     <loc>https://inhack.github.io/kr/tags/security/</loc>
@@ -130,19 +182,6 @@
                 rel="alternate"
                 hreflang="kr"
                 href="https://inhack.github.io/kr/tags/solidity/"
-                />
-  </url><url>
-    <loc>https://inhack.github.io/kr/tags/</loc>
-    <lastmod>2022-03-10T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://inhack.github.io/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="kr"
-                href="https://inhack.github.io/kr/tags/"
                 />
   </url><url>
     <loc>https://inhack.github.io/kr/tags/wargame/</loc>

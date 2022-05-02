@@ -2,14 +2,14 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>DeFi on inhack</title>
-    <link>https://inhack.github.io/kr/tags/defi/</link>
+    <link>https://inhack.github.io/kr/categories/defi/</link>
     <description>Recent content in DeFi on inhack</description>
     <image>
       <url>https://inhack.github.io/papermod-cover.png</url>
       <link>https://inhack.github.io/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Mon, 02 May 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://inhack.github.io/kr/tags/defi/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 02 May 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://inhack.github.io/kr/categories/defi/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>비영구적 손실(IL, Impermanent Loss)에 대하여</title>
       <link>https://inhack.github.io/kr/posts/about-il/</link>
@@ -21,24 +21,6 @@
 하나의 자산을 예치함으로써 유동성을 제공하고, 그에 따른 보상을 받는다.
 이 때 내가 예치한 자산의 가격변동에 따라 나는 확정적인 이익/손실이 발생한다. (인출/거래 수수료 등은 고려하지 않고 자산의 가치만 생각했을 때)
 내가 $1000에 해당하는 ETH를 예치/스테이킹했을 때를 가정해보자.</description>
-    </item>
-    
-    <item>
-      <title>[Solution] DeFi Hack</title>
-      <link>https://inhack.github.io/kr/posts/solution-defi-hack/</link>
-      <pubDate>Thu, 10 Mar 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://inhack.github.io/kr/posts/solution-defi-hack/</guid>
-      <description>DeFi Hack(https://www.defihack.xyz/) Solutions</description>
-    </item>
-    
-    <item>
-      <title>[Solution] Damn Vulnerable DeFi</title>
-      <link>https://inhack.github.io/kr/posts/solution-damn-vulnerable-defi/</link>
-      <pubDate>Tue, 11 Jan 2022 00:00:00 +0000</pubDate>
-      
-      <guid>https://inhack.github.io/kr/posts/solution-damn-vulnerable-defi/</guid>
-      <description>Damn Vulnerable DeFi(The offensive security playground for decentralized finances) Solutions</description>
     </item>
     
   </channel>
