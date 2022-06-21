@@ -6,16 +6,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
 <title>비영구적 손실(IL, Impermanent Loss)에 대하여 | inhack</title>
-<meta name="keywords" content="DeFi, Impermanent Loss" />
+<meta name="keywords" content="DeFi, Impermanent Loss">
 <meta name="description" content="1. IL(Impermanent Loss)? 기본적으로 디파이 투자 방식은 (1) 단일 자산 예치 및 스테이킹 과 (2) Pair Liquidity Pool(유동성 풀)에 유동성 공급 두가지로 구분해볼 수 있다.
 (1) 단일 자산 예치 및 스테이킹
 하나의 자산을 예치함으로써 유동성을 제공하고, 그에 따른 보상을 받는다.
 이 때 내가 예치한 자산의 가격변동에 따라 나는 확정적인 이익/손실이 발생한다. (인출/거래 수수료 등은 고려하지 않고 자산의 가치만 생각했을 때)
 내가 $1000에 해당하는 ETH를 예치/스테이킹했을 때를 가정해보자.">
 <meta name="author" content="inhack">
-<link rel="canonical" href="https://inhack.github.io/posts/about-il/" />
-<link crossorigin="anonymous" href="/assets/css/stylesheet.min.c88963fe2d79462000fd0fb1b3737783c32855d340583e4523343f8735c787f0.css" integrity="sha256-yIlj/i15RiAA/Q&#43;xs3N3g8MoVdNAWD5FIzQ/hzXHh/A=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/assets/js/highlight.min.7680afc38aa6b15ddf158a4f3780b7b1f7dde7e91d26f073e6229bb7a0793c92.js" integrity="sha256-doCvw4qmsV3fFYpPN4C3sffd5&#43;kdJvBz5iKbt6B5PJI="
+<link rel="canonical" href="https://inhack.github.io/posts/about-il/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.d7fb4cbf980fe688a21621b06a795933c4e6bb2d4070ec940667af1715d84af2.css" integrity="sha256-1/tMv5gP5oiiFiGwanlZM8Tmuy1AcOyUBmevFxXYSvI=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.acb54fd32bbc1982428b8850317e45d076b95012730a5936667e6bc21777692a.js" integrity="sha256-rLVP0yu8GYJCi4hQMX5F0Ha5UBJzClk2Zn5rwhd3aSo="
     onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://inhack.github.io/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://inhack.github.io/favicon-16x16.png">
@@ -24,9 +24,8 @@
 <link rel="mask-icon" href="https://inhack.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<meta name="generator" content="Hugo 0.88.1" />
-<link rel="alternate" hreflang="en" href="https://inhack.github.io/posts/about-il/" />
-<link rel="alternate" hreflang="kr" href="https://inhack.github.io/kr/posts/about-il/" />
+<link rel="alternate" hreflang="en" href="https://inhack.github.io/posts/about-il/">
+<link rel="alternate" hreflang="kr" href="https://inhack.github.io/kr/posts/about-il/">
 <noscript>
     <style>
         #theme-toggle,
@@ -115,8 +114,8 @@
   "keywords": [
     "DeFi", "Impermanent Loss"
   ],
-  "articleBody": "    1. IL(Impermanent Loss)? 기본적으로 디파이 투자 방식은 (1) 단일 자산 예치 및 스테이킹 과 (2) Pair Liquidity Pool(유동성 풀)에 유동성 공급 두가지로 구분해볼 수 있다.\n(1) 단일 자산 예치 및 스테이킹\n하나의 자산을 예치함으로써 유동성을 제공하고, 그에 따른 보상을 받는다.\n이 때 내가 예치한 자산의 가격변동에 따라 나는 확정적인 이익/손실이 발생한다. (인출/거래 수수료 등은 고려하지 않고 자산의 가치만 생각했을 때)\n내가 $1000에 해당하는 ETH를 예치/스테이킹했을 때를 가정해보자. 인출 시점의 ETH의 가격이 50% 상승한 경우, 나는 $500에 해당하는 확정적인 이익이 발생하고, 50% 하락한 경우 $500에 해당하는 영구적이며 확정적인 손실이 발생한다.\n(2) Pair Liquidity Pool(유동성 풀)에 유동성 공급\n반면에 비영구적인 손실은 미확정인 손실로 AMM(Automated Market Maker) 기반의 Pair 자산의 Liquidity Pool(유동성 풀)에서 발생한다. (본 글에서 AMM은 CPMM[Constant Product Market Makers] 기반의 AMM을 의미)\nAMM에서 두 자산이 동일한 유동성을 가질 때 내가 Liquidity Provider(유동성 공급자)로써 제공한 내 자산의 가치가 떨어질 수 있는데, 이 때 비영구적 손실은 가격변동에 따라 겪게될 잠재적인 손실 비율을 의미한다.\nAMM 기반의 유동성 풀에서는 Pair로 묶인 두 자산간의 가치 차이와 유동성이 동일하게 유지된다. (각 자산의 가격은 변동하더라도, Pair 유동성 풀에서 두 자산은 같은 가치의 양,리저브를 유지)\n즉 내가 예치한 두 자산이 외부에서 가격변동이 발생했을 때, 두 자산은 차익거래자에 의해 유동성 풀에서도 변동된 가격을 따라가게 되며 이에 따라 두 자산간의 가치 차이가 변동된다.\n 2. IL 직접 계산해보기 2.0. 시나리오 X-Y Pair Liquidity Pool에 아래와 같은 초기가격일 때 동일한 가치인 $1000만큼씩 유동성을 공급하고, 자산의 가격이 변동되었을 때 발생하는 비영구적손실 값을 계산해보자.\n각 자산 X, Y의 초기가격 및 예치 수량\n - \\(InitialPrice_X = \\$100\\)  - \\(InitialPrice_Y = \\$10\\)  - \\(x = \\$1000 / \\$100 = 10\\)  - \\(y = \\$1000 / \\$10 = 100\\) 변동된 각 자산 X, Y의 가격\n - \\(ChangedPrice_X = \\$400\\)  - \\(ChangedPrice_Y = \\$20\\) 2.1. k 계산 다음과 같이 각 자산의 수를 곱하여 k를 계산할 수 있다. k는 해당 Pair Liquidity Pool이 유지해야 할 상수(constant)를 의미하며, 각 자산의 가격이 변하더라도 페어 유동성 풀에서 두 자산의 수량의 곱은 k를 유지해야 한다. (CPMM에 따라)\n$$ k = x * y = 10 * 100 = 1000 $$\n2.2. 초기 가치비율(Initial_Ratio) 계산 이후, X-Y의 자산 가치 비율인 Initial_Ratio를 계산해야 한다. 쉽게는 1개의 자산 Y가 몇개의 자산 X의 가치를 가지는지를 의미하며, 다음과 같이 계산할 수 있다.\n$$ Initial_Ratio = InitialPrice_Y\\ /\\ InitialPrice_X =100/10 = 10 $$\n2.3. 초기 가치비율에 따라 각 자산의 수량 확인 이 값을 통해, 다음과 같이 각 자산이 초기에 어느정도의 수량으로 예치할지 계산할 수 있다.\n$$ x = \\sqrt{k\\ /\\ Intial_Ratio} = \\sqrt{1000/10} = \\sqrt{100} = 10 $$\n$$ y = \\sqrt{k\\ *\\ Intial_Ratio} = \\sqrt{1000*10} = \\sqrt{10000} = 100 $$\n2.4. 변동된 가치비율(Changed_Ratio) 계산 자산 X의 가격은 $400으로 상승하였고, Y의 가격은 $20으로 상승하였다. 이 상황에서 마찬가지로 1개의 자산 Y가 가지는 자산 X의 가치를 가지는지 계산할 수 있다.\n$$ Changed_Ratio = ChangedPrice_Y\\ /\\ ChangedPrice_X = 400/20 = 20 $$\n2.5. 변동된 가치비율에 따라 각 자산의 수량 계산 Pair Pool은 두 자산이 동일한 가치를 가지도록 자산의 수량이 변경되어야 한다. 다음과 같이 변동된 가치비율로 각 자산의 수량을 계산할 수 있다.\n$$ x' = \\sqrt{k\\ /\\ Changed_Ratio} = \\sqrt{1000 / 20} = \\sqrt{50} = 7.0710678118654755 $$\n$$ y' = \\sqrt{k\\ *\\ Changed_Ratio} = \\sqrt{1000*20} = \\sqrt{20000} = 141.4213562373095 $$\n가격이 위와 같이 변동될 경우, 유동성 풀은 자산 X에 대해서는 약 7.07개의 수량을 보유해야 하며, 자산 Y에 대해서는 약 141.42개를 보유해야 한다.\n$$ 7.0710678118654755 * 141.4213562373095 = 1000.0000000000001 = k $$\n2.6. IL 계산 IL은 내가 Pair 유동성 풀에 예치한 자산을, 예치하지 않고 그대로 현물로 가지고 있었을 때의 가치와 비교하여 얼마나 손실이 발생했는지를 나타내는 비율이다.\n위에서 구한 값들을 기반으로, 자산 X, Y를 그대로 가지고 있었을 때의 가치인 $V_{held}$와 자산 X, Y를 Pair LP에 예치했을 때의 가치인 $V_{pool}$ 을 계산할 수 있다.\n$$ V_{held} = ChangdPrice_X * x + ChangdPrice_Y * y = 400 * 10 + 20 * 100 = 6000 $$\n$$ V_{pool} = ChangdPrice_X * x' + ChangedPrice_Y * y' = 400 * 7.071067 + 20 * 141.421356 = 5656.8539200000005 $$\n$V_{held}$에서 $V_{pool}$을 뺀 값인 손실액이 $V_{held}$에서 어느정도 비율을 차지하는지 다음과 같이 계산하여 IL 값을 확인할 수 있다.\n$$ IL = \\frac {V_{held} - V_{pool}} {V_{held}} =\\frac {6000 - 5656.8539200000005} {6000} = 0.057191013333333256 $$\nIL은 약 5.72%이다.\n 3. IL 계산을 위한 유도된 식 사용 앞에서 계산한 방식대로 자산의 가격 변동에 따라 매번 풀에 위치한 각 자산의 수량을 계산하고 가치를 계산하고 비율을 계산하는 것은 비효율적이다.\n이미 IL을 간편하게 계산하기 위해 유도된 식이 있다.\n$$ IL(k') = \\dfrac{2\\sqrt{k'}} {1+k'} - 1 $$\n여기서 $k'$는 초기 가격비율과 변동된 가격비율의 비율이라고 생각하면 되고, $$ k' = \\dfrac {\\dfrac{ChangedPrice_X} {ChangedPrice_Y}} {\\dfrac{InitialPrice_X} {InitialPrice_Y}} = \\dfrac{\\dfrac{400}{20}}{\\dfrac{100}{10}} = \\dfrac{20}{10} = 2 $$ 로 계산할 수 있다.\n$$ IL(k') = \\frac{2\\sqrt{2}} {1+2} - 1 = \\frac{2.828427}{3} - 1 = 0.9428090415820635 - 1 = -0.0571909584 $$\nIL은 동일하게 약 -5.72%임을 확인할 수 있다.\n 4. 정리   비영구적인 손실은 미확정인 손실로, 풀에서 유동성을 회수할 때 발생한다.\n  풀에 포함된 두 자산의 가격이 상승한다고 해서 현물로 가지고 있을 때보다 무조건 이익을 보는 것이 아니다. (비영구적 손실 때문에)\n 그럼에도 유동성 풀에 유동성을 공급하는 이유는 손실을 상쇄시킬만할 보상(수수료 등)을 제공받기 때문    풀에 포함된 두 자산이 상승/하락에 관계없이 같은 방향과 같은 가격변동 폭으로 움직이면 비영구적인 손실은 발생하지 않는다.\n 예1) 자산 X가 $100에서 $200으로 상승하고, 자산 Y가 $10에서 $20으로 상승하여, 같은 상승 방향으로 같은 가격변동 폭인 100%씩 상승하면 IL은 0% 예2) 자산 X가 $100에서 $50으로 하락하고, 자산 Y가 $10에서 $5로 하락하여, 같은 하락 방향으로 같은 가격변동 폭인 50%씩 하락하면 IL은 0% 이건 위에서 설명한 식으로 직접 계산해보거나 다음의 여러 IL 계산을 제공하는 서비스를 이용해서 테스트 ( DailyDefi.org - IL Calculator )    변동성(가격변동)이 작은 자산을 포함하고 있는 풀은 상대적으로 비영구적 손실이 작게 발생한다.\n 스테이블코인과 같이 변동성이 적은 자산이 포함된 풀을 이용 시 상대적으로 작은 비영구적 손실 발생     ",
-  "wordCount" : "906",
+  "articleBody": "    1. IL(Impermanent Loss)? 기본적으로 디파이 투자 방식은 (1) 단일 자산 예치 및 스테이킹 과 (2) Pair Liquidity Pool(유동성 풀)에 유동성 공급 두가지로 구분해볼 수 있다.\n(1) 단일 자산 예치 및 스테이킹\n하나의 자산을 예치함으로써 유동성을 제공하고, 그에 따른 보상을 받는다.\n이 때 내가 예치한 자산의 가격변동에 따라 나는 확정적인 이익/손실이 발생한다. (인출/거래 수수료 등은 고려하지 않고 자산의 가치만 생각했을 때)\n내가 $1000에 해당하는 ETH를 예치/스테이킹했을 때를 가정해보자. 인출 시점의 ETH의 가격이 50% 상승한 경우, 나는 $500에 해당하는 확정적인 이익이 발생하고, 50% 하락한 경우 $500에 해당하는 영구적이며 확정적인 손실이 발생한다.\n(2) Pair Liquidity Pool(유동성 풀)에 유동성 공급\n반면에 비영구적인 손실은 미확정인 손실로 AMM(Automated Market Maker) 기반의 Pair 자산의 Liquidity Pool(유동성 풀)에서 발생한다. (본 글에서 AMM은 CPMM[Constant Product Market Makers] 기반의 AMM을 의미)\nAMM에서 두 자산이 동일한 유동성을 가질 때 내가 Liquidity Provider(유동성 공급자)로써 제공한 내 자산의 가치가 떨어질 수 있는데, 이 때 비영구적 손실은 가격변동에 따라 겪게될 잠재적인 손실 비율을 의미한다.\nAMM 기반의 유동성 풀에서는 Pair로 묶인 두 자산간의 가치 차이와 유동성이 동일하게 유지된다. (각 자산의 가격은 변동하더라도, Pair 유동성 풀에서 두 자산은 같은 가치의 양,리저브를 유지)\n즉 내가 예치한 두 자산이 외부에서 가격변동이 발생했을 때, 두 자산은 차익거래자에 의해 유동성 풀에서도 변동된 가격을 따라가게 되며 이에 따라 두 자산간의 가치 차이가 변동된다.\n 2. IL 직접 계산해보기 2.0. 시나리오 X-Y Pair Liquidity Pool에 아래와 같은 초기가격일 때 동일한 가치인 $1000만큼씩 유동성을 공급하고, 자산의 가격이 변동되었을 때 발생하는 비영구적손실 값을 계산해보자.\n각 자산 X, Y의 초기가격 및 예치 수량\n - \\(InitialPrice_X = \\$100\\)  - \\(InitialPrice_Y = \\$10\\)  - \\(x = \\$1000 / \\$100 = 10\\)  - \\(y = \\$1000 / \\$10 = 100\\) 변동된 각 자산 X, Y의 가격\n - \\(ChangedPrice_X = \\$400\\)  - \\(ChangedPrice_Y = \\$20\\) 2.1. k 계산 다음과 같이 각 자산의 수를 곱하여 k를 계산할 수 있다. k는 해당 Pair Liquidity Pool이 유지해야 할 상수(constant)를 의미하며, 각 자산의 가격이 변하더라도 페어 유동성 풀에서 두 자산의 수량의 곱은 k를 유지해야 한다. (CPMM에 따라)\n$$ k = x * y = 10 * 100 = 1000 $$\n2.2. 초기 가치비율(Initial_Ratio) 계산 이후, X-Y의 자산 가치 비율인 Initial_Ratio를 계산해야 한다. 쉽게는 1개의 자산 Y가 몇개의 자산 X의 가치를 가지는지를 의미하며, 다음과 같이 계산할 수 있다.\n$$ Initial_Ratio = InitialPrice_Y\\ /\\ InitialPrice_X =100/10 = 10 $$\n2.3. 초기 가치비율에 따라 각 자산의 수량 확인 이 값을 통해, 다음과 같이 각 자산이 초기에 어느정도의 수량으로 예치할지 계산할 수 있다.\n$$ x = \\sqrt{k\\ /\\ Intial_Ratio} = \\sqrt{1000/10} = \\sqrt{100} = 10 $$\n$$ y = \\sqrt{k\\ *\\ Intial_Ratio} = \\sqrt{1000*10} = \\sqrt{10000} = 100 $$\n2.4. 변동된 가치비율(Changed_Ratio) 계산 자산 X의 가격은 $400으로 상승하였고, Y의 가격은 $20으로 상승하였다. 이 상황에서 마찬가지로 1개의 자산 Y가 가지는 자산 X의 가치를 가지는지 계산할 수 있다.\n$$ Changed_Ratio = ChangedPrice_Y\\ /\\ ChangedPrice_X = 400/20 = 20 $$\n2.5. 변동된 가치비율에 따라 각 자산의 수량 계산 Pair Pool은 두 자산이 동일한 가치를 가지도록 자산의 수량이 변경되어야 한다. 다음과 같이 변동된 가치비율로 각 자산의 수량을 계산할 수 있다.\n$$ x' = \\sqrt{k\\ /\\ Changed_Ratio} = \\sqrt{1000 / 20} = \\sqrt{50} = 7.0710678118654755 $$\n$$ y' = \\sqrt{k\\ *\\ Changed_Ratio} = \\sqrt{1000*20} = \\sqrt{20000} = 141.4213562373095 $$\n가격이 위와 같이 변동될 경우, 유동성 풀은 자산 X에 대해서는 약 7.07개의 수량을 보유해야 하며, 자산 Y에 대해서는 약 141.42개를 보유해야 한다.\n$$ 7.0710678118654755 * 141.4213562373095 = 1000.0000000000001 = k $$\n2.6. IL 계산 IL은 내가 Pair 유동성 풀에 예치한 자산을, 예치하지 않고 그대로 현물로 가지고 있었을 때의 가치와 비교하여 얼마나 손실이 발생했는지를 나타내는 비율이다.\n위에서 구한 값들을 기반으로, 자산 X, Y를 그대로 가지고 있었을 때의 가치인 \\( V_{held} \\) 와 자산 X, Y를 Pair LP에 예치했을 때의 가치인 \\( V_{pool} \\) 을 계산할 수 있다. $$ V_{held} = ChangdPrice_X * x + ChangdPrice_Y * y = 400 * 10 + 20 * 100 = 6000 $$\n$$ V_{pool} = ChangdPrice_X * x' + ChangedPrice_Y * y' = 400 * 7.071067 + 20 * 141.421356 = 5656.8539200000005 $$\n풀에 예치했을 때 예상되는 손실액(\\( V_{held} \\) - \\( V_{pool} \\))이 \\( V_{held} \\)에서 어느정도 비율을 차지하는지 다음과 같이 계산하여 IL 값을 확인할 수 있다. $$ IL = \\frac {V_{held} - V_{pool}} {V_{held}} =\\frac {6000 - 5656.8539200000005} {6000} = 0.057191013333333256 $$\nIL은 약 5.72%이다.\n 3. IL 계산을 위한 유도된 식 사용 앞에서 계산한 방식대로 자산의 가격 변동에 따라 매번 풀에 위치한 각 자산의 수량을 계산하고 가치를 계산하고 비율을 계산하는 것은 비효율적이다.\n이미 IL을 간편하게 계산하기 위해 유도된 식이 있다.\n$$ IL(k') = \\dfrac{2\\sqrt{k'}} {1+k'} - 1 $$\n여기서 $k'$는 초기 가격비율과 변동된 가격비율의 비율이라고 생각하면 되고, $$ k' = \\dfrac {\\dfrac{ChangedPrice_X} {ChangedPrice_Y}} {\\dfrac{InitialPrice_X} {InitialPrice_Y}} = \\dfrac{\\dfrac{400}{20}}{\\dfrac{100}{10}} = \\dfrac{20}{10} = 2 $$ 로 계산할 수 있다.\n$$ IL(k') = \\frac{2\\sqrt{2}} {1+2} - 1 = \\frac{2.828427}{3} - 1 = 0.9428090415820635 - 1 = -0.0571909584 $$\nIL은 동일하게 약 -5.72%임을 확인할 수 있다.\n 4. 정리   비영구적인 손실은 미확정인 손실로, 풀에서 유동성을 회수할 때 발생한다.\n  풀에 포함된 두 자산의 가격이 상승한다고 해서 현물로 가지고 있을 때보다 무조건 이익을 보는 것이 아니다. (비영구적 손실 때문에)\n 그럼에도 유동성 풀에 유동성을 공급하는 이유는 손실을 상쇄시킬만할 보상(수수료 등)을 제공받기 때문    풀에 포함된 두 자산이 상승/하락에 관계없이 같은 방향과 같은 가격변동 폭으로 움직이면 비영구적인 손실은 발생하지 않는다.\n 예1) 자산 X가 $100에서 $200으로 상승하고, 자산 Y가 $10에서 $20으로 상승하여, 같은 상승 방향으로 같은 가격변동 폭인 100%씩 상승하면 IL은 0% 예2) 자산 X가 $100에서 $50으로 하락하고, 자산 Y가 $10에서 $5로 하락하여, 같은 하락 방향으로 같은 가격변동 폭인 50%씩 하락하면 IL은 0% 이건 위에서 설명한 식으로 직접 계산해보거나 다음의 여러 IL 계산을 제공하는 서비스를 이용해서 테스트 ( DailyDefi.org - IL Calculator )    변동성(가격변동)이 작은 자산을 포함하고 있는 풀은 상대적으로 비영구적 손실이 작게 발생한다.\n 스테이블코인과 같이 변동성이 적은 자산이 포함된 풀을 이용 시 상대적으로 작은 비영구적 손실 발생     ",
+  "wordCount" : "919",
   "inLanguage": "en",
   "datePublished": "2022-05-02T00:00:00Z",
   "dateModified": "2022-05-02T00:00:00Z",
@@ -156,7 +155,7 @@
     <nav class="nav">
         <div class="logo">
             <a href="https://inhack.github.io/" accesskey="h" title="inhack (Alt + H)">inhack</a>
-            <span class="logo-switches">
+            <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -183,7 +182,7 @@
                             aria-label=":kr:">🇰🇷</a>
                     </li>
                 </ul>
-            </span>
+            </div>
         </div>
         <ul id="menu">
             <li>
@@ -217,8 +216,8 @@
     <h1 class="post-title">
       비영구적 손실(IL, Impermanent Loss)에 대하여
     </h1>
-    <div class="post-meta"><span title='2022-05-02 00:00:00 +0000 UTC'>May 2, 2022</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;inhack&nbsp;|&nbsp;
-<ul class="i18n_list">Translations:
+    <div class="post-meta"><span title='2022-05-02 00:00:00 +0000 UTC'>May 2, 2022</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;inhack&nbsp;|&nbsp;Translations:
+<ul class="i18n_list">
     <li>
         <a href="https://inhack.github.io/kr/posts/about-il/">🇰🇷</a>
     </li>
@@ -350,14 +349,18 @@ $$</p>
 $$</p>
 <h3 id="26-il-계산">2.6. IL 계산<a hidden class="anchor" aria-hidden="true" href="#26-il-계산">#</a></h3>
 <p>IL은 내가 Pair 유동성 풀에 예치한 자산을, 예치하지 않고 그대로 현물로 가지고 있었을 때의 가치와 비교하여 얼마나 손실이 발생했는지를 나타내는 비율이다.</p>
-<p>위에서 구한 값들을 기반으로, 자산 X, Y를 그대로 가지고 있었을 때의 가치인 $V_{held}$와 자산 X, Y를 Pair LP에 예치했을 때의 가치인 $V_{pool}$ 을 계산할 수 있다.</p>
+
+위에서 구한 값들을 기반으로, 자산 X, Y를 그대로 가지고 있었을 때의 가치인 \( V_{held} \) 와 자산 X, Y를 Pair LP에 예치했을 때의 가치인 \( V_{pool} \) 을 계산할 수 있다.
+
 <p>$$
 V_{held} = ChangdPrice_X * x + ChangdPrice_Y * y = 400 * 10 + 20 * 100 = 6000
 $$</p>
 <p>$$
 V_{pool} = ChangdPrice_X * x' + ChangedPrice_Y * y' = 400 * 7.071067 + 20 * 141.421356 = 5656.8539200000005
 $$</p>
-<p>$V_{held}$에서 $V_{pool}$을 뺀 값인 손실액이 $V_{held}$에서 어느정도 비율을 차지하는지 다음과 같이 계산하여 IL 값을 확인할 수 있다.</p>
+
+풀에 예치했을 때 예상되는 손실액(\( V_{held} \) -  \( V_{pool} \))이 \( V_{held} \)에서 어느정도 비율을 차지하는지 다음과 같이 계산하여 IL 값을 확인할 수 있다.
+
 <p>$$
 IL = \frac {V_{held} - V_{pool}} {V_{held}} =\frac {6000 - 5656.8539200000005} {6000} = 0.057191013333333256
 $$</p>
@@ -416,8 +419,13 @@ $$</p>
       <li><a href="https://inhack.github.io/tags/impermanent-loss/">Impermanent Loss</a></li>
     </ul>
 <nav class="paginav">
+  <a class="prev" href="https://inhack.github.io/posts/nft_holder_collect_1_web_crawling/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>NFT 홀더 목록 수집하기 (1) - Web Crawling</span>
+  </a>
   <a class="next" href="https://inhack.github.io/posts/solution-defi-hack/">
-    <span class="title">Next Page »</span>
+    <span class="title">Next »</span>
     <br>
     <span>[Solution] DeFi Hack</span>
   </a>
@@ -478,7 +486,7 @@ $$</p>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
-        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
     </span>
 </footer>
 <a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
@@ -547,12 +555,12 @@ $$</p>
 
         const copybutton = document.createElement('button');
         copybutton.classList.add('copy-code');
-        copybutton.innerText = 'copy';
+        copybutton.innerHTML = 'copy';
 
         function copyingDone() {
-            copybutton.innerText = 'copied!';
+            copybutton.innerHTML = 'copied!';
             setTimeout(() => {
-                copybutton.innerText = 'copy';
+                copybutton.innerHTML = 'copy';
             }, 2000);
         }
 
