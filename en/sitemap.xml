@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://inhack.github.io/categories/blockchain/</loc>
-    <lastmod>2022-06-21T00:00:00+00:00</lastmod>
+    <lastmod>2022-07-14T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="kr"
@@ -16,7 +16,7 @@
                 />
   </url><url>
     <loc>https://inhack.github.io/categories/</loc>
-    <lastmod>2022-06-21T00:00:00+00:00</lastmod>
+    <lastmod>2022-07-14T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="kr"
@@ -29,7 +29,7 @@
                 />
   </url><url>
     <loc>https://inhack.github.io/tags/erc721/</loc>
-    <lastmod>2022-06-21T00:00:00+00:00</lastmod>
+    <lastmod>2022-07-14T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="kr"
@@ -42,7 +42,7 @@
                 />
   </url><url>
     <loc>https://inhack.github.io/tags/ethereum/</loc>
-    <lastmod>2022-06-21T00:00:00+00:00</lastmod>
+    <lastmod>2022-07-14T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="kr"
@@ -55,7 +55,7 @@
                 />
   </url><url>
     <loc>https://inhack.github.io/</loc>
-    <lastmod>2022-06-21T00:00:00+00:00</lastmod>
+    <lastmod>2022-07-14T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="kr"
@@ -68,7 +68,7 @@
                 />
   </url><url>
     <loc>https://inhack.github.io/tags/nft/</loc>
-    <lastmod>2022-06-21T00:00:00+00:00</lastmod>
+    <lastmod>2022-07-14T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="kr"
@@ -78,6 +78,71 @@
                 rel="alternate"
                 hreflang="en"
                 href="https://inhack.github.io/tags/nft/"
+                />
+  </url><url>
+    <loc>https://inhack.github.io/posts/nft_holder_collect_2_web3/</loc>
+    <lastmod>2022-07-14T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="kr"
+                href="https://inhack.github.io/kr/posts/nft_holder_collect_2_web3/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://inhack.github.io/posts/nft_holder_collect_2_web3/"
+                />
+  </url><url>
+    <loc>https://inhack.github.io/posts/</loc>
+    <lastmod>2022-07-14T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="kr"
+                href="https://inhack.github.io/kr/posts/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://inhack.github.io/posts/"
+                />
+  </url><url>
+    <loc>https://inhack.github.io/tags/rust/</loc>
+    <lastmod>2022-07-14T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="kr"
+                href="https://inhack.github.io/kr/tags/rust/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://inhack.github.io/tags/rust/"
+                />
+  </url><url>
+    <loc>https://inhack.github.io/tags/</loc>
+    <lastmod>2022-07-14T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="kr"
+                href="https://inhack.github.io/kr/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://inhack.github.io/tags/"
+                />
+  </url><url>
+    <loc>https://inhack.github.io/tags/web3/</loc>
+    <lastmod>2022-07-14T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="kr"
+                href="https://inhack.github.io/kr/tags/web3/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://inhack.github.io/tags/web3/"
                 />
   </url><url>
     <loc>https://inhack.github.io/posts/nft_holder_collect_1_web_crawling/</loc>
@@ -91,45 +156,6 @@
                 rel="alternate"
                 hreflang="en"
                 href="https://inhack.github.io/posts/nft_holder_collect_1_web_crawling/"
-                />
-  </url><url>
-    <loc>https://inhack.github.io/posts/</loc>
-    <lastmod>2022-06-21T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="kr"
-                href="https://inhack.github.io/kr/posts/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://inhack.github.io/posts/"
-                />
-  </url><url>
-    <loc>https://inhack.github.io/tags/rust/</loc>
-    <lastmod>2022-06-21T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="kr"
-                href="https://inhack.github.io/kr/tags/rust/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://inhack.github.io/tags/rust/"
-                />
-  </url><url>
-    <loc>https://inhack.github.io/tags/</loc>
-    <lastmod>2022-06-21T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="kr"
-                href="https://inhack.github.io/kr/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://inhack.github.io/tags/"
                 />
   </url><url>
     <loc>https://inhack.github.io/tags/web-crawl/</loc>
